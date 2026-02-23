@@ -64,8 +64,11 @@ For our White Belt submission, we have implemented the foundational layers requi
 
 ## Screenshots Placeholder
 
-*(Note: Before submitting to the GitHub repository, please take screenshots of the following and add them below)*
+<img width="1901" height="842" alt="Screenshot 2026-02-23 234156" src="https://github.com/user-attachments/assets/e6d5ce6e-5900-41ac-8f6e-d487f4a04517" />
 
-- **Wallet Connected State:** *(Add image here)*
-- **Balance Displayed:** *(Add image here)*
-- **Successful Testnet Transaction:** *(Add image here)*
+<img width="1223" height="847" alt="Screenshot 2026-02-23 234311" src="https://github.com/user-attachments/assets/5410df05-b361-48c5-9343-5018ee4c47e5" />
+
+<img width="514" height="732" alt="Screenshot 2026-02-23 234330" src="https://github.com/user-attachments/assets/21646789-853c-425d-8ed1-6ba799b82131" />
+
+
+
