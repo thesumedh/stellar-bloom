@@ -2,7 +2,7 @@
 
 StellarBloom is the missing middleware that allows anyone to use Soroban smart contracts without knowing blockchain exists. It solves the biggest friction point in Stellar's ecosystem growth: onboarding non-crypto users into Soroban dApps.
 
-> **Note:** This current repository represents the **Level 1 - White Belt** implementation for the Stellar Journey to Mastery program. Future levels will expand this into the full Smart Contract Wallet middleware.
+> **Note:** This repository represents the **Level 2 - Yellow Belt** implementation for the Stellar Journey to Mastery program.
 
 ## The StellarBloom Vision 🚀
 
@@ -16,27 +16,27 @@ StellarBloom is the missing middleware that allows anyone to use Soroban smart c
 
 ---
 
-## 🥋 Level 1 - White Belt Features
+## 🥋 Level 2 - Yellow Belt Features
 
-For our White Belt submission, we have implemented the foundational layers required to interact with the Stellar Testnet:
+For our Yellow Belt submission, we have implemented multi-wallet support and deployed our first Soroban Smart Contract to the testnet!
 
-- **Wallet Setup & Connection:** Connect and disconnect your Freighter wallet in a single click using the Freighter v6 API.
-- **Balance Handling:** Fetches and displays the connected wallet's native testnet XLM balance directly from the Horizon Horizon.
-- **Transaction Flow:** Simple form to send XLM to any existing address on the Stellar Testnet.
-- **Feedback Alerts:** Real-time feedback for transaction success or failure, including a link to the Stellar Expert explorer.
-- **Gorgeous UI:** A visually stunning, responsive user interface using pure Vanilla CSS, featuring glassmorphism elements, CSS animations, and a rich dark mode color palette.
+- **Multi-Wallet Support:** Users can now seamlessly connect using Freighter, Albedo, or xBull wallets via the `@creit.tech/stellar-wallets-kit` integration.
+- **User Wallet Smart Contract (Rust):** A Soroban smart contract was written in Rust with initialization and meta-transaction execution capabilities.
+- **Smart Contract Event Mapping:** The `execute_transfer` function in the contract emits a `gasless transaction executed` event upon success.
+- **Testnet Deployment:** The optimized `.wasm` has been successfully deployed and verified on the Stellar Testnet.
 
 ## Setup Instructions
 
 ### Prerequisites
 - Node.js (v18+)
-- [Freighter Wallet Browser Extension](https://www.freighter.app/)
+- A Stellar wallet (Freighter, Albedo, or xBull)
 
 ### Running Locally
 
 1. **Clone the repository** (or navigate into the folder)
    ```bash
-   cd stellar-payment-dapp
+   git clone https://github.com/thesumedh/stellar-bloom.git
+   cd stellar-bloom/stellar-bloom
    ```
 
 2. **Install Dependencies**
@@ -49,26 +49,26 @@ For our White Belt submission, we have implemented the foundational layers requi
    npm run dev
    ```
 
-4. **Prepare the Wallet**
-   - Open your Freighter wallet extension.
-   - Switch your network to **Stellar Testnet** using the gear icon settings.
-   - Hit "Connect Wallet" on the StellarBloom screen!
+4. **Connect your Wallet!**
+   - Click "Connect Wallet" from the dApp.
+   - Select either Freighter, Albedo, or xBull from the popup modal.
+   - Send and verify transactions on the Testnet!
 
-## Project Requirements Checklist
+## Project Submission Requirements & Links
 
-- [x] Wallet Connection (Implement connect/disconnect)
-- [x] Fetch connected wallet's XLM balance and display it clearly
-- [x] Send an XLM transaction on Testnet
-- [x] Show transaction success/failure states and explorer link
-- [x] Simple, modern UI
+✅ **Public GitHub repository**
+- [Repository link](https://github.com/thesumedh/stellar-bloom)
 
-## Screenshots Placeholder
+✅ **Required Deployed Artifacts**
+- **Deployed Contract Address:** `CAZMBK5MIVR2P2DMDJ7L7S2EHV6YNT5CQ5JC775W2OEGVGA5X3EHZLEI`
+- **Example Transaction Hash:** [View on Stellar Expert](https://stellar.expert/explorer/testnet/op/5628898238803969)
+
+## Screenshots
+
+**Multi-Wallet Connection Screen Available in Level 2:**
+
+*(Insert screenshot of the popup wallet options here)*
 
 <img width="1901" height="842" alt="Screenshot 2026-02-23 234156" src="https://github.com/user-attachments/assets/e6d5ce6e-5900-41ac-8f6e-d487f4a04517" />
-
 <img width="1223" height="847" alt="Screenshot 2026-02-23 234311" src="https://github.com/user-attachments/assets/5410df05-b361-48c5-9343-5018ee4c47e5" />
-
 <img width="514" height="732" alt="Screenshot 2026-02-23 234330" src="https://github.com/user-attachments/assets/21646789-853c-425d-8ed1-6ba799b82131" />
-
-
-

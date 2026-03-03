@@ -1,24 +1,24 @@
-import { isConnected, requestAccess, signTransaction, getAddress } from '@stellar/freighter-api';
+import { StellarWalletsKit, Networks as KitNetworks } from '@creit.tech/stellar-wallets-kit';
+import { FreighterModule } from '@creit.tech/stellar-wallets-kit/modules/freighter';
+import { AlbedoModule } from '@creit.tech/stellar-wallets-kit/modules/albedo';
+import { xBullModule } from '@creit.tech/stellar-wallets-kit/modules/xbull';
 import { Horizon, TransactionBuilder, Networks, Asset, Operation } from '@stellar/stellar-sdk';
 
 const server = new Horizon.Server("https://horizon-testnet.stellar.org");
 
+StellarWalletsKit.init({
+    network: KitNetworks.TESTNET,
+    selectedWalletId: 'freighter',
+    modules: [
+        new FreighterModule(),
+        new AlbedoModule(),
+        new xBullModule()
+    ],
+});
+
 export async function connectWallet(): Promise<string> {
-    const connectedResult = await isConnected();
-    if (!connectedResult.isConnected) throw new Error("Freighter not installed. Please install the Freighter extension.");
-
-    // requestAccess handles both the connection prompt and returning the allowed address
-    const access = await requestAccess();
-    if (access.error) throw new Error(access.error);
-
-    // Alternatively, if they have already granted access, getAddress() will return the address
-    if (access.address) {
-        return access.address;
-    }
-
-    const addressResult = await getAddress();
-    if (addressResult.error) throw new Error(addressResult.error);
-    return addressResult.address;
+    const result = await StellarWalletsKit.authModal();
+    return result.address;
 }
 
 export async function fetchBalance(pubKey: string): Promise<string> {
@@ -51,10 +51,15 @@ export async function sendXlm(sender: string, receiver: string, amount: string):
         .build();
 
     const xdr = tx.toXDR();
-    const signedResult = await signTransaction(xdr, { networkPassphrase: Networks.TESTNET });
 
-    if (signedResult.error) {
-        throw new Error(signedResult.error || "Failed to sign transaction or action was rejected.");
+    // Use the kit to sign the transaction
+    const signedResult = await StellarWalletsKit.signTransaction(xdr, {
+        networkPassphrase: Networks.TESTNET,
+        address: sender
+    });
+
+    if (!signedResult || !signedResult.signedTxXdr) {
+        throw new Error("Failed to sign transaction or action was rejected.");
     }
 
     // Convert signed XDR string back to a transaction to submit

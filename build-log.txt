@@ -1,0 +1,14 @@
+
+> stellar-payment-dapp@0.0.0 build
+> tsc -b && vite build
+
+src/stellar/stellar.ts(1,29): error TS2305: Module '"@creit.tech/stellar-wallets-kit"' has no exported member 'WalletNetwork'.
+src/stellar/stellar.ts(2,10): error TS2724: '"@creit.tech/stellar-wallets-kit/modules/freighter"' has no exported member named 'freighter'. Did you mean 'FREIGHTER_ID'?
+src/stellar/stellar.ts(3,10): error TS2305: Module '"@creit.tech/stellar-wallets-kit/modules/albedo"' has no exported member 'albedo'.
+src/stellar/stellar.ts(4,10): error TS2305: Module '"@creit.tech/stellar-wallets-kit/modules/xbull"' has no exported member 'xbull'.
+src/stellar/stellar.ts(9,42): error TS2554: Expected 0 arguments, but got 1.
+src/stellar/stellar.ts(20,15): error TS2339: Property 'openModal' does not exist on type 'StellarWalletsKit'.
+src/stellar/stellar.ts(21,34): error TS7006: Parameter 'option' implicitly has an 'any' type.
+src/stellar/stellar.ts(22,17): error TS2576: Property 'setWallet' does not exist on type 'StellarWalletsKit'. Did you mean to access the static member 'StellarWalletsKit.setWallet' instead?
+src/stellar/stellar.ts(28,26): error TS2339: Property 'getPublicKey' does not exist on type 'StellarWalletsKit'.
+src/stellar/stellar.ts(64,36): error TS2339: Property 'signTx' does not exist on type 'StellarWalletsKit'.
