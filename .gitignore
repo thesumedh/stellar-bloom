@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+contracts/target/
+relayer/node_modules/
+stellar-bloom/node_modules/
+contracts/.soroban/

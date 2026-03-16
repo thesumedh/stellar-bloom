@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "user_wallet",
+]
+resolver = "2"

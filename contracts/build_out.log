@@ -1,0 +1,13 @@
+Γä╣∩╕Å  CARGO_BUILD_RUSTFLAGS=--remap-path-prefix=C:/Users/sumed/.cargo/registry/src= cargo rustc --manifest-path=user_wallet\Cargo.toml --crate-type=cdylib --target=wasm32v1-none --release
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   F:\abc\Stellar-Bloom\contracts\user_wallet\Cargo.toml
+workspace: F:\abc\Stellar-Bloom\contracts\Cargo.toml
+    Finished `release` profile [optimized] target(s) in 0.17s
+Γä╣∩╕Å  Build Summary:
+   Wasm File: target\wasm32v1-none\release\user_wallet.wasm
+   Wasm Hash: c9f4e6cad91bfc9c95531498d51a4c3132767497a3c95f25ec2923a8ee645551
+   Exported Functions: 3 found
+     ΓÇó _
+     ΓÇó execute_transfer
+     ΓÇó init
+Γ£à Build Complete

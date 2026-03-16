@@ -1,0 +1,12 @@
+Γä╣∩╕Å  Simulating install transactionΓÇª
+Γä╣∩╕Å  Signing transaction: aa62bd5358508c9a28b675bddbd7a36539330100fad60381a5260fab51d99058
+≡ƒîÄ Submitting install transactionΓÇª
+Γä╣∩╕Å  Using wasm hash 2e9370174e1552c505df2a7462c33d8e390d5d7cca7ecf1d37eedb7f04e4c772
+Γä╣∩╕Å  Simulating deploy transactionΓÇª
+Γä╣∩╕Å  Transaction hash is 8b689614821784afa18f8d3be15580f6143e9a32895c64f84f9cd8cde9d5ad79
+≡ƒöù https://stellar.expert/explorer/testnet/tx/8b689614821784afa18f8d3be15580f6143e9a32895c64f84f9cd8cde9d5ad79
+Γä╣∩╕Å  Signing transaction: 8b689614821784afa18f8d3be15580f6143e9a32895c64f84f9cd8cde9d5ad79
+≡ƒîÄ Submitting deploy transactionΓÇª
+≡ƒöù https://stellar.expert/explorer/testnet/contract/CBRCZHNXOYXLIWWNWAEUMLXWKP6HH534RWISAA7DOTEVEDBR3HEVSJCF
+Γ£à Deployed!
+CBRCZHNXOYXLIWWNWAEUMLXWKP6HH534RWISAA7DOTEVEDBR3HEVSJCF
