@@ -38,7 +38,7 @@ export async function fetchBalance(pubKey: string): Promise<string> {
 // Level 3: Gas Sponsor Implementation
 // We invoke the smart contract user_wallet, but we DO NOT submit it ourselves.
 // We sign it, and send it to our node.js relayer.
-export async function sendXlm(sender: string, receiver: string, amount: string): Promise<string> {
+export async function sendXlm(sender: string, receiver: string, amount: string, apiKey?: string): Promise<string> {
     const account = await server.loadAccount(sender);
 
     // The deployed Level 2/3 Contract ID
@@ -85,10 +85,15 @@ export async function sendXlm(sender: string, receiver: string, amount: string):
         throw new Error("Failed to sign transaction or action was rejected.");
     }
 
+    const relayApiKey = apiKey || 'sb_test_5kq9v2x8m4j1c0p3';
+
     // Instead of submitting to network, POST to relayer!
     const relayResponse = await fetch('http://localhost:3000/relay', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'x-api-key': relayApiKey
+        },
         body: JSON.stringify({ xdr: signedResult.signedTxXdr })
     });
 

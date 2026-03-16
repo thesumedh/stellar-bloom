@@ -1,0 +1,72 @@
+name: StellarBloom CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test-smart-contracts:
+    name: Test Soroban Contracts
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./contracts
+        
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Cache cargo registry
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/registry
+        key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+        
+    - name: Cache cargo index
+      uses: actions/cache@v3
+      with:
+        path: ~/.cargo/git
+        key: ${{ runner.os }}-cargo-index-${{ hashFiles('**/Cargo.lock') }}
+        
+    - name: Cache cargo build
+      uses: actions/cache@v3
+      with:
+        path: contracts/target
+        key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
+
+    - name: Install Rust toolchain
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        targets: wasm32-unknown-unknown
+        
+    - name: Run Tests
+      run: cargo test
+
+  build-frontend:
+    name: Build Developer Dashboard
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./stellar-bloom
+        
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: './stellar-bloom/package-lock.json'
+        
+    - name: Install dependencies
+      run: npm ci || npm install
+      
+    - name: Build React App
+      run: npm run build
