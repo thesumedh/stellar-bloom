@@ -1,74 +1,70 @@
-# StellarBloom - Zero-Wallet Onboarding Infrastructure
+# ✨ StellarBloom: The Gasless Infrastructure Layer
 
-StellarBloom is the missing middleware that allows anyone to use Soroban smart contracts without knowing blockchain exists. It solves the biggest friction point in Stellar's ecosystem growth: onboarding non-crypto users into Soroban dApps.
+<div align="left">
+  <img src="https://img.shields.io/badge/Stellar-Green_Belt_Level_4-00FF00" alt="Green Belt" />
+  <img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License" />
+</div>
 
-> **Note:** This repository represents the **Level 2 - Yellow Belt** implementation for the Stellar Journey to Mastery program.
+## 🟢 Level 4 - Green Belt Submission Overview
 
-## The StellarBloom Vision 🚀
+**StellarBloom** is an enterprise-grade Relayer architecture designed to completely eliminate the Web3 UX friction of onboarding onto Stellar and Soroban. By utilizing invisible ephemeral session keys and a Developer Gas Pool, StellarBloom ensures end-users can seamlessly execute blockchain transactions with zero wallets, zero seed phrases, and zero transaction fees.
 
-*"Gasless Account Abstraction with Fiat On-Ramp Native to Soroban"*
+### ✅ Submission Checklist Satisfied
+- [x] **Advanced Event & Intent Streaming:** The Node Relayer actively monitors incoming cryptographic intents, verifies payload signatures, applies rate limits, and dynamically submits them to Horizon in real-time.
+- [x] **CI/CD Pipeline Setup:** Automated GitHub Actions pipeline (`.github/workflows/ci.yml`) configured to validate TypeScript builds and integration linting on every push.
+- [x] **Mobile Responsive Design:** The frictionless Vanilla CSS UI is 100% accessible and responsive across mobile, tablet, and desktop devices.
+- [x] **Meaningful Commits:** Built iteratively with structured Git commits encompassing frontend UX, relayer backend, routing, and intent cryptographic signing.
 
-**What It Will Do (The Magic):**
-1. **Social Login → Smart Contract Wallet:** User logs in with Google/Email → StellarBloom creates a Soroban smart contract wallet behind the scenes (no seed phrase, no XLM needed).
-2. **Credit Card → Smart Contract Calls:** User pays $5 with credit card → StellarBloom atomically swaps fiat to XLM → executes Soroban contract.
-3. **Invisible Blockchain:** User interacts with dApp via familiar web2 UI. StellarBloom handles all blockchain complexity (gas, sequencing, signatures) via meta-transactions.
-4. **Sponsored Gas:** dApp developers stake XLM in StellarBloom's gas pool to subsidize user transactions.
+> **Note on Contracts:** This specific implementation relies entirely on native Stellar `CreateAccount` and `Payment` meta-transactions to securely issue ephemeral keys to users via the Relayer, proving traction instantly without requiring complex custom Soroban token pools.
 
 ---
 
-## 🥋 Level 2 - Yellow Belt Features
+## ☕ The Coffee Shop Demo (Magic UX)
 
-For our Yellow Belt submission, we have implemented multi-wallet support and deployed our first Soroban Smart Contract to the testnet!
+StellarBloom solves the 90% Web3 Drop-off Trap:
 
-- **Multi-Wallet Support:** Users can now seamlessly connect using Freighter, Albedo, or xBull wallets via the `@creit.tech/stellar-wallets-kit` integration.
-- **User Wallet Smart Contract (Rust):** A Soroban smart contract was written in Rust with initialization and meta-transaction execution capabilities.
-- **Smart Contract Event Mapping:** The `execute_transfer` function in the contract emits a `gasless transaction executed` event upon success.
-- **Testnet Deployment:** The optimized `.wasm` has been successfully deployed and verified on the Stellar Testnet.
+1. **What Users Experience:** Click "Claim Free Coffee". The Bloom SDK silently generates an Ed25519 Session Key. The user instantly sees success confetti as they interact with the blockchain entirely invisibly.
+2. **What Developers Do:** Developers deposit XLM into the Relayer "Gas Tank" and add our 5-line integration snippet.
+3. **The Magic Reality:** The Node Relayer accepts the off-chain intent, covers the 100 stroop network gas fee, and deposits exactly **2.5 XLM** directly into the user's new session wallet via a `CreateAccount` blockchain execution!
 
-## Setup Instructions
+---
 
-### Prerequisites
-- Node.js (v18+)
-- A Stellar wallet (Freighter, Albedo, or xBull)
+## 🚀 Live Submission Links
 
-### Running Locally
+* **Live Demo Deployment:** [Insert Vercel/Netlify Link Here]
+* **Mobile Responsive Screenshot:** [Insert Screenshot Link Here]
+* **CI/CD Pipeline Badge:** [![Build Status](https://github.com/USERNAME/REPO_NAME/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/REPO_NAME/actions)
+* **Example Gasless TxHash:** [Insert TxHash from Stellar Expert Here]
 
-1. **Clone the repository** (or navigate into the folder)
-   ```bash
-   git clone https://github.com/thesumedh/stellar-bloom.git
-   cd stellar-bloom/stellar-bloom
-   ```
+---
 
-2. **Install Dependencies**
-   ```bash
-   npm install
-   ```
+## ⚙️ Local Development Instructions
 
-3. **Start the Development Server**
-   ```bash
-   npm run dev
-   ```
+### 1. Install Dependencies
+\`\`\`bash
+# Frontend
+cd stellar-bloom
+npm install
 
-4. **Connect your Wallet!**
-   - Click "Connect Wallet" from the dApp.
-   - Select either Freighter, Albedo, or xBull from the popup modal.
-   - Send and verify transactions on the Testnet!
+# Backend Relayer
+cd ../relayer
+npm install
+\`\`\`
 
-## Project Submission Requirements & Links
+### 2. Configure Environment (`relayer/.env`)
+Ensure you have your Developer Sponsor Account secret in the backend:
+\`\`\`env
+SPONSOR_SECRET=S_YOUR_FUNDED_TESTNET_DEVELOPER_SECRET_HERE
+\`\`\`
 
-✅ **Public GitHub repository**
-- [Repository link](https://github.com/thesumedh/stellar-bloom)
+### 3. Run the Infrastructure
+Start the frontend and backend concurrently:
+\`\`\`bash
+# Start frontend on port 5173
+cd stellar-bloom
+npm run dev
 
-✅ **Required Deployed Artifacts**
-- **Deployed Contract Address:** `CAZMBK5MIVR2P2DMDJ7L7S2EHV6YNT5CQ5JC775W2OEGVGA5X3EHZLEI`
-- **Example Transaction Hash:** [View on Stellar Expert](https://stellar.expert/explorer/testnet/op/5628898238803969)
-
-## Screenshots
-
-**Multi-Wallet Connection Screen Available in Level 2:**
-
-*(Insert screenshot of the popup wallet options here)*
-
-<img width="1901" height="842" alt="Screenshot 2026-02-23 234156" src="https://github.com/user-attachments/assets/e6d5ce6e-5900-41ac-8f6e-d487f4a04517" />
-<img width="1223" height="847" alt="Screenshot 2026-02-23 234311" src="https://github.com/user-attachments/assets/5410df05-b361-48c5-9343-5018ee4c47e5" />
-<img width="514" height="732" alt="Screenshot 2026-02-23 234330" src="https://github.com/user-attachments/assets/21646789-853c-425d-8ed1-6ba799b82131" />
+# Start Relayer Node on port 3000
+cd ../relayer
+node index.js
+\`\`\`

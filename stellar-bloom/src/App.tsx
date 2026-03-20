@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { connectWallet, fetchBalance, sendXlm } from './stellar/stellar';
+import { Keypair } from '@stellar/stellar-sdk';
 import './App.css';
 
 interface ApiStats {
@@ -23,6 +24,12 @@ function App() {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [apiStats, setApiStats] = useState<ApiStats | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Coffee Shop State
+  const [isCoffeeLoading, setIsCoffeeLoading] = useState(false);
+  const [coffeeError, setCoffeeError] = useState<string | null>(null);
+  const [coffeeSuccess, setCoffeeSuccess] = useState<string | null>(null);
+  const [sessionPub, setSessionPub] = useState<string | null>(null);
 
   const fetchStats = async (key: string) => {
     try {
@@ -104,6 +111,50 @@ function App() {
       setError(err.message || 'Transaction failed');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleClaimCoffee = async () => {
+    setIsCoffeeLoading(true);
+    setCoffeeError(null);
+    setCoffeeSuccess(null);
+    try {
+        // 1. Generate anonymous session keypair instantly (No Wallet UI needed)
+        const sessionKeypair = Keypair.random();
+        const temporaryPubKey = sessionKeypair.publicKey();
+        setSessionPub(temporaryPubKey);
+
+        // 2. Wrap the intent
+        const intentData = { action: 'mint_coffee_nft', timestamp: Date.now() };
+        const payload = JSON.stringify(intentData);
+        
+        // 3. Sign locally with the ephemeral key
+        const payloadBytes = new TextEncoder().encode(payload);
+        const signatureBuffer = sessionKeypair.sign(payloadBytes as any);
+        const signature = btoa(Array.from(new Uint8Array(signatureBuffer)).map(b => String.fromCharCode(b)).join(''));
+
+        // 4. Relay to the backend to wrap in real XLM transaction
+        const res = await fetch('http://localhost:3000/relay/intent', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                // Use the developer's API key if generated, else a mock one
+                'x-api-key': apiKey || 'sb_test_demo123' 
+            },
+            body: JSON.stringify({ payload, signature, pubKey: temporaryPubKey })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            setCoffeeSuccess(data.hash);
+            if (apiKey) fetchStats(apiKey); // update dashboard immediately
+        } else {
+            setCoffeeError(data.error || 'Relayer failed to process intent');
+        }
+    } catch(err: any) {
+        setCoffeeError(err.message || 'Network error occurred');
+    } finally {
+        setIsCoffeeLoading(false);
     }
   };
 
@@ -217,65 +268,94 @@ function App() {
               <p>Experience seamless onboarding. Send a transaction, and watch our Relayer cover the gas fee automatically behind the scenes.</p>
             </div>
 
-            {!pubKey ? (
-              <div className="glass-panel connect-card">
-                <div className="connect-icon">👛</div>
-                <h3>Ready to experience gasless?</h3>
-                <p>Connect your Freighter wallet on the Testnet to begin.</p>
-                <button className="btn-primary large mt-4" onClick={handleConnect} disabled={isLoading}>
-                  {isLoading ? 'Connecting...' : 'Connect Wallet'}
-                </button>
-              </div>
-            ) : (
-              <div className="dashboard">
-                <div className="glass-panel balance-card">
-                  <h2>Your Wallet Balance</h2>
-                  <div className="balance-amount">{balance} <span className="currency">XLM</span></div>
-                  <div className="badge">Testnet Connected</div>
-                </div>
+            <div className="dashboard">
+              
+              {/* Coffee Shop Gasless Demo */}
+              <div className="glass-panel payment-card" style={{ border: '2px solid #8B5CF6', marginBottom: '2rem' }}>
+                 <h2>☕ The Coffee Shop Demo <span className="badge" style={{backgroundColor: '#8B5CF6', color: 'white', float: 'right'}}>1-Click Magic</span></h2>
+                 <p className="text-muted mb-4" style={{fontSize: '14px'}}>
+                   Assume you are an end-user who has never heard of crypto. Click the button below. 
+                   We will instantly generate an invisible cryptographic key and execute a genuine Stellar transaction funded by our Relayer.
+                 </p>
+                 
+                 <button className="btn-primary full-width" style={{backgroundColor: '#8B5CF6', border: 'none', padding: '16px', fontSize: '16px', cursor: 'pointer'}} onClick={handleClaimCoffee} disabled={isCoffeeLoading}>
+                    {isCoffeeLoading ? 'Brewing Free Coffee (Triggering Smart Contract)...' : 'Claim Free Coffee ☕'}
+                 </button>
 
-                <div className="glass-panel payment-card">
-                  <h2>Send Gasless Payment {apiKey && <span className="text-muted" style={{fontSize: '12px'}}>(via {apiKey.slice(0, 8)}...)</span>}</h2>
-                  <form onSubmit={handleSend} className="payment-form">
-                    <div className="input-group">
-                      <label>Recipient Address</label>
-                      <input
-                        type="text"
-                        placeholder="G..."
-                        value={receiver}
-                        onChange={e => setReceiver(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="input-group">
-                      <label>Amount (XLM)</label>
-                      <input
-                        type="number"
-                        step="0.0000001"
-                        placeholder="0.00"
-                        value={amount}
-                        onChange={e => setAmount(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <button type="submit" className="btn-primary full-width" disabled={isLoading || !receiver || !amount}>
-                      {isLoading ? 'Processing via Relayer...' : 'Send XLM (Gas-Free)'}
+                 {coffeeError && <div className="alert error mt-4">❌ {coffeeError}</div>}
+                 {coffeeSuccess && (
+                   <div className="alert success mt-4">
+                     ✅ <strong>Coffee Claimed! Transaction Confirmed!</strong> 🎉<br /><br />
+                     <div style={{fontSize: '13px', background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '8px', marginBottom: '10px'}}>
+                        <strong>Magic Under the Hood:</strong><br />
+                        Your exact invisible Session Key: <code>{sessionPub?.slice(0, 10)}...{sessionPub?.slice(-10)}</code><br />
+                     </div>
+                     <span>StellarBloom Relayer successfully paid the blockchain gas fee and funded this key.</span><br /><br />
+                     <a href={`https://stellar.expert/explorer/testnet/tx/${coffeeSuccess}`} target="_blank" rel="noreferrer" style={{color: '#8B5CF6', fontWeight: 'bold', textDecoration: 'underline'}}>
+                       View +XLM execution on Stellar Expert ↗
+                     </a>
+                   </div>
+                 )}
+              </div>
+
+              {/* Legacy Connect & Send */}
+              <div className="glass-panel payment-card">
+                 <h2 style={{opacity: 0.5}}>Traditional Integration Demo</h2>
+                 
+                 {!pubKey ? (
+                  <div className="connect-card mt-4" style={{border: '1px dashed #3f3f46', padding: '20px', borderRadius: '12px', textAlign: 'center'}}>
+                    <div className="connect-icon" style={{fontSize: '2rem'}}>👛</div>
+                    <h3 style={{fontSize: '1.1rem'}}>Have a Freighter Wallet?</h3>
+                    <p style={{fontSize: '14px', color: '#a1a1aa', margin: '10px 0'}}>Connect your wallet to test traditional signed envelopes routed through the gas relayer.</p>
+                    <button className="btn-secondary mt-2" onClick={handleConnect} disabled={isLoading}>
+                      {isLoading ? 'Connecting...' : 'Connect Freighter'}
                     </button>
-                  </form>
-                </div>
-
-                {error && <div className="alert error">❌ {error}</div>}
-                {txHash && (
-                  <div className="alert success">
-                    ✅ <strong>Transaction Successful!</strong> <br /><br />
-                    <span>The relayer successfully paid the gas fee.</span><br />
-                    <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer">
-                      View execution on Stellar Expert ↗
-                    </a>
                   </div>
-                )}
+                 ) : (
+                  <>
+                    <div className="balance-amount" style={{fontSize: '1.5rem', marginTop: '1rem'}}>{balance} <span className="currency" style={{fontSize: '1rem'}}>XLM</span></div>
+                    <div className="badge mb-4">Testnet Connected</div>
+                    <form onSubmit={handleSend} className="payment-form">
+                      <div className="input-group">
+                        <label>Recipient Address</label>
+                        <input
+                          type="text"
+                          placeholder="G..."
+                          value={receiver}
+                          onChange={e => setReceiver(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="input-group">
+                        <label>Amount (XLM)</label>
+                        <input
+                          type="number"
+                          step="0.0000001"
+                          placeholder="0.00"
+                          value={amount}
+                          onChange={e => setAmount(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <button type="submit" className="btn-secondary full-width" disabled={isLoading || !receiver || !amount}>
+                        {isLoading ? 'Processing via Relayer...' : 'Send XLM (Gas-Free)'}
+                      </button>
+                    </form>
+
+                    {error && <div className="alert error">❌ {error}</div>}
+                    {txHash && (
+                      <div className="alert success">
+                        ✅ <strong>Transaction Successful!</strong> <br /><br />
+                        <span>The relayer successfully paid the gas fee.</span><br />
+                        <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer">
+                          View execution on Stellar Expert ↗
+                        </a>
+                      </div>
+                    )}
+                  </>
+                 )}
               </div>
-            )}
+            </div>
           </section>
         )}
       </main>

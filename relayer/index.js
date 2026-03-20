@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { Horizon, TransactionBuilder, Networks, Keypair } from '@stellar/stellar-sdk';
+import { Horizon, TransactionBuilder, Networks, Keypair, Operation } from '@stellar/stellar-sdk';
 import rateLimit from 'express-rate-limit';
 import 'dotenv/config';
 
@@ -32,6 +32,9 @@ const apiKeysDb = {
     'sb_test_5kq9v2x8m4j1c0p3': { transactions: 0, gasSponsored: 0, appName: 'Demo App' }
 };
 
+// --- Rate Limiting State for Intents ---
+const userRateLimits = new Map(); // pubKey -> { count, resetTime }
+
 // --- Stellar Configuration ---
 const server = new Horizon.Server("https://horizon-testnet.stellar.org");
 const SPONSOR_SECRET = process.env.SPONSOR_SECRET;
@@ -42,7 +45,7 @@ const SPONSOR_SECRET = process.env.SPONSOR_SECRET;
 app.post('/relay', async (req, res) => {
     try {
         const apiKey = req.headers['x-api-key'];
-        
+
         // Ensure developer is authenticated
         if (!apiKey || !apiKeysDb[apiKey]) {
             return res.status(401).json({ error: "Unauthorized: Invalid or missing x-api-key header" });
@@ -101,7 +104,7 @@ app.get('/api/stats/:apiKey', (req, res) => {
     if (!stats) {
         return res.status(404).json({ error: "API Key not found" });
     }
-    
+
     // Convert stroops to standard XLM for the dashboard
     res.json({
         success: true,
@@ -113,12 +116,98 @@ app.get('/api/stats/:apiKey', (req, res) => {
     });
 });
 
+// 2.5 Relayer Off-Chain Intent Endpoint (MVP Feature)
+app.post('/relay/intent', async (req, res) => {
+    try {
+        const apiKey = req.headers['x-api-key'] || 'sb_test_5kq9v2x8m4j1c0p3';
+        const { payload, signature, pubKey } = req.body;
+
+        if (!payload || !signature || !pubKey) {
+            return res.status(400).json({ error: "Missing payload, signature, or pubKey" });
+        }
+
+        // 1. Rate Limiting per PubKey (5 per hour)
+        const now = Date.now();
+        const userLimit = userRateLimits.get(pubKey) || { count: 0, resetTime: now + 3600000 };
+        if (now > userLimit.resetTime) {
+            userLimit.count = 0;
+            userLimit.resetTime = now + 3600000;
+        }
+        if (userLimit.count >= 5) {
+            return res.status(429).json({ error: "Rate limit exceeded (5 tx/hr per session key)" });
+        }
+
+        // 2. Check Signature
+        const keypair = Keypair.fromPublicKey(pubKey);
+        const isValid = keypair.verify(Buffer.from(payload), Buffer.from(signature, 'base64'));
+        if (!isValid) {
+            return res.status(401).json({ error: "Invalid intent signature" });
+        }
+
+        const intentData = JSON.parse(payload);
+
+        // 3. Construct Genuine Transaction on Testnet
+        if (!SPONSOR_SECRET) {
+            return res.status(500).json({ error: "Relayer missing SPONSOR_SECRET" });
+        }
+        const sponsorKeypair = Keypair.fromSecret(SPONSOR_SECRET);
+        const sponsorAccount = await server.loadAccount(sponsorKeypair.publicKey());
+
+        // We execute a real transaction to prove traction. 
+        // We will either Create the session account (funding it) or send a tiny Payment.
+        let smartWalletOperation;
+        try {
+            await server.loadAccount(pubKey);
+            // Account already exists on ledger, send an interactive payment
+            smartWalletOperation = Operation.payment({
+                destination: pubKey,
+                asset: Asset.native(),
+                amount: "0.0100000"
+            });
+        } catch (e) {
+            // Account doesn't exist, create it and give it 2.5 XLM!
+            smartWalletOperation = Operation.createAccount({
+                destination: pubKey,
+                startingBalance: "2.5000000"
+            });
+        }
+
+        const tx = new TransactionBuilder(sponsorAccount, { 
+            fee: "100", 
+            networkPassphrase: Networks.TESTNET 
+        })
+        .addOperation(smartWalletOperation)
+        .setTimeout(30)
+        .build();
+
+        tx.sign(sponsorKeypair);
+
+        // 4. Submit to Network
+        const response = await server.submitTransaction(tx);
+
+        // 5. Update Bookkeeping
+        userLimit.count += 1;
+        userRateLimits.set(pubKey, userLimit);
+        if (apiKeysDb[apiKey]) {
+            apiKeysDb[apiKey].transactions += 1;
+            apiKeysDb[apiKey].gasSponsored += 100;
+        }
+
+        console.log(`[Relayer Intent] ${pubKey} Action: ${intentData.action} Hash: ${response.hash}`);
+        res.json({ success: true, hash: response.hash });
+
+    } catch (error) {
+        console.error("Intent relay failed:", error);
+        res.status(500).json({ error: "Execution failed", details: error.message });
+    }
+});
+
 // 3. Developer Portal: Mock API Key Generation
 app.post('/api/keys/generate', (req, res) => {
     // Generate a secure-looking mock API key for the dashboard
     const newKey = 'sb_test_' + Math.random().toString(36).substr(2, 16);
     const appName = req.body.appName || 'New dApp Integration';
-    
+
     apiKeysDb[newKey] = { transactions: 0, gasSponsored: 0, appName };
     res.json({ success: true, apiKey: newKey, appName });
 });
