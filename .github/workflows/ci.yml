@@ -2,48 +2,71 @@ name: StellarBloom CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js 20.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20.x
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
 
-    - name: Install Frontend Dependencies
-      working-directory: ./stellar-bloom
-      run: npm install
+      - name: Install Frontend Dependencies
+        working-directory: ./stellar-bloom
+        run: npm install
 
-    - name: Execute Strict TypeScript Build Matrix
-      working-directory: ./stellar-bloom
-      run: npm run build
+      - name: Build Frontend
+        working-directory: ./stellar-bloom
+        run: npm run build
 
-    - name: Verify Backend Integrity
-      working-directory: ./relayer
-      run: |
-        npm install
-        node -c index.js
+      - name: Verify Backend
+        working-directory: ./relayer
+        run: |
+          npm install
+          node -c index.js
 
-    - name: Set up Rust Toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        target: wasm32-unknown-unknown
+      - name: Set up Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: wasm32-unknown-unknown
 
-    - name: Build Robust Soroban Smart Contract
-      working-directory: ./contracts/user_wallet
-      run: cargo build --target wasm32-unknown-unknown --release
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-    - name: Run Smart Contract Unit Tests
-      working-directory: ./contracts/user_wallet
-      run: cargo test
+      - name: Check Formatting
+        working-directory: ./contracts/user_wallet
+        run: cargo fmt -- --check
 
-    - name: Application Pipeline Verified
-      run: echo "🚀 The StellarBloom architecture and Soroban contracts compilation succeeded!"
+      - name: Run Clippy
+        working-directory: ./contracts/user_wallet
+        run: cargo clippy -- -D warnings
+
+      - name: Build Contract
+        working-directory: ./contracts/user_wallet
+        run: cargo build --target wasm32-unknown-unknown --release
+
+      - name: Run Tests
+        working-directory: ./contracts/user_wallet
+        run: cargo test
+
+      - name: Upload WASM
+        uses: actions/upload-artifact@v4
+        with:
+          name: soroban-contract
+          path: ./contracts/user_wallet/target/wasm32-unknown-unknown/release/*.wasm
+
+      - name: Success
+        run: echo "🚀 StellarBloom pipeline passed!"
