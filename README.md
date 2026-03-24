@@ -80,22 +80,18 @@ A gas sponsorship infrastructure inherently presents targeted attack vectors. St
 - [Repository link](https://github.com/thesumedh/stellar-bloom)
 
 ✅ **Required Deployed Artifacts**
-- **Live Demo Deployment:** [Insert Vercel/Netlify Link Here]
+- **Live Demo Deployment:** https://stellar-bloom.vercel.app/
 - **Deployed Contract Address:** `CAZMBK5MIVR2P2DMDJ7L7S2EHV6YNT5CQ5JC775W2OEGVGA5X3EHZLEI`
 - **Example Transaction Hash:** [View on Stellar Expert](https://stellar.expert/explorer/testnet/op/5628898238803969)
 
 ---
 
 ## 📸 Screenshots & Responsive Implementation
+<img width="1887" height="819" alt="Screenshot 2026-03-24 175139" src="https://github.com/user-attachments/assets/23f25df5-4811-4776-833b-0e292951e8f1" />
 
-**Multi-Wallet Connection & Interface:**
+<img width="546" height="686" alt="Screenshot 2026-03-21 003215" src="https://github.com/user-attachments/assets/ef5d72a9-b9de-482f-b9fa-4058363b2e71" />
 
-<img width="1901" height="842" alt="Screenshot 2026-02-23 234156" src="https://github.com/user-attachments/assets/e6d5ce6e-5900-41ac-8f6e-d487f4a04517" />
-<img width="1223" height="847" alt="Screenshot 2026-02-23 234311" src="https://github.com/user-attachments/assets/5410df05-b361-48c5-9343-5018ee4c47e5" />
-
-**Mobile Responsive Views:**
-
-<img width="514" height="732" alt="Screenshot Responsive" src="https://github.com/user-attachments/assets/21646789-853c-425d-8ed1-6ba799b82131" />
+<img width="601" height="860" alt="Screenshot 2026-03-24 175156" src="https://github.com/user-attachments/assets/fa79c3e4-f04d-43a3-91e9-d6cf4cf37e31" />
 
 ---
 
