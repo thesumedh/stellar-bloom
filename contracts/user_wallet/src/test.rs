@@ -1,5 +1,5 @@
 #![cfg(test)]
-
+#![allow(warnings)]
 use super::*;
 use soroban_sdk::token::Client as TokenClient;
 use soroban_sdk::token::StellarAssetClient as TokenAdminClient;

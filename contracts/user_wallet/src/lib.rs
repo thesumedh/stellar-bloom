@@ -1,4 +1,5 @@
 #![no_std]
+#![allow(warnings)]
 use soroban_sdk::token::Client as TokenClient;
 use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env};
 
