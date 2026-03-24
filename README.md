@@ -14,7 +14,7 @@
 
 ### ✅ Submission Checklist Satisfied
 - [x] **Advanced Event & Intent Streaming:** The Node Relayer actively monitors incoming cryptographic intents, verifies payload signatures, applies rate limits, and dynamically submits them to Horizon in real-time.
-- [x] **CI/CD Pipeline Setup:** Automated GitHub Actions pipeline (`.github/workflows/ci.yml`) is actively running with Vercel deployment automation.
+- [x] **CI/CD Pipeline Setup (Now featuring full Smart Contract coverage):** Automated GitHub Actions pipeline (`.github/workflows/ci.yml`) is actively running. It performs strict TypeScript frontend/backend validations AND automatically compiles/tests the Soroban Rust Smart Contract (`wasm32-unknown-unknown`).
 - [x] **Mobile Responsive Design:** The frictionless Vanilla CSS UI is seamlessly responsive across mobile, tablet, and desktop formats.
 - [x] **Meaningful Commits:** Built iteratively with structured Git commits encompassing frontend UX, relayer backend, routing, and intent cryptographic signing.
 

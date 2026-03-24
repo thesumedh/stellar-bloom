@@ -32,5 +32,18 @@ jobs:
         npm install
         node -c index.js
 
+    - name: Set up Rust Toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        target: wasm32-unknown-unknown
+
+    - name: Build Robust Soroban Smart Contract
+      working-directory: ./contracts/user_wallet
+      run: cargo build --target wasm32-unknown-unknown --release
+
+    - name: Run Smart Contract Unit Tests
+      working-directory: ./contracts/user_wallet
+      run: cargo test
+
     - name: Application Pipeline Verified
-      run: echo "🚀 The StellarBloom architecture compilation succeeded!"
+      run: echo "🚀 The StellarBloom architecture and Soroban contracts compilation succeeded!"
