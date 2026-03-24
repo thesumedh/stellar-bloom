@@ -1,6 +1,6 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env};
 use soroban_sdk::token::Client as TokenClient;
+use soroban_sdk::{contract, contractimpl, symbol_short, Address, Env};
 
 #[contract]
 pub struct UserWallet;
@@ -8,7 +8,7 @@ pub struct UserWallet;
 #[contractimpl]
 impl UserWallet {
     /// Execute a token transfer on behalf of the `from` address.
-    /// This simulates a meta-transaction where the owner authorizes the execution, 
+    /// This simulates a meta-transaction where the owner authorizes the execution,
     /// and the relayer pays the gas.
     pub fn execute_transfer(env: Env, from: Address, to: Address, token: Address, amount: i128) {
         // Require authorization from the sender
@@ -20,7 +20,12 @@ impl UserWallet {
 
         // Emit an event to track the execution
         env.events().publish(
-            (symbol_short!("executed"), from.clone(), to.clone(), token.clone()),
+            (
+                symbol_short!("executed"),
+                from.clone(),
+                to.clone(),
+                token.clone(),
+            ),
             amount,
         );
     }

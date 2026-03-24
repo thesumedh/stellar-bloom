@@ -1,9 +1,13 @@
 #![cfg(test)]
 
 use super::*;
-use soroban_sdk::{testutils::{Address as _, Events}, Address, Env, IntoVal, symbol_short};
 use soroban_sdk::token::Client as TokenClient;
 use soroban_sdk::token::StellarAssetClient as TokenAdminClient;
+use soroban_sdk::{
+    symbol_short,
+    testutils::{Address as _, Events},
+    Address, Env, IntoVal,
+};
 
 fn create_token_contract<'a>(e: &Env, admin: &Address) -> (TokenClient<'a>, TokenAdminClient<'a>) {
     let contract_address = e.register_stellar_asset_contract(admin.clone());
@@ -24,7 +28,7 @@ fn test_successful_execution() {
     // Setup Token
     let token_admin = Address::generate(&env);
     let (token, token_admin_client) = create_token_contract(&env, &token_admin);
-    
+
     let sender = Address::generate(&env);
     let recipient = Address::generate(&env);
     let amount = 500;
@@ -76,7 +80,7 @@ fn test_insufficient_balance_fails() {
 
     let sender = Address::generate(&env);
     let recipient = Address::generate(&env);
-    
+
     // Sender gets 100 tokens
     token_admin_client.mint(&sender, &100);
 
