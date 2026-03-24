@@ -102,12 +102,15 @@ A gas sponsorship infrastructure inherently presents targeted attack vectors. St
 ## ⚙️ Local Development Instructions
 
 Start the frontend and backend concurrently:
-\`\`\`bash
+
+
 # Start frontend on port 5173
-cd stellar-bloom
-npm install && npm run dev
+```cd stellar-bloom
+npm install && npm run dev 
+```
 
 # Start Relayer Node on port 3000
+```
 cd ../relayer
 npm install && node index.js
-\`\`\`
+```
