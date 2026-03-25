@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { Horizon, TransactionBuilder, Networks, Keypair, Operation } from '@stellar/stellar-sdk';
+import { Horizon, TransactionBuilder, Networks, Keypair, Operation, Asset } from '@stellar/stellar-sdk';
 import rateLimit from 'express-rate-limit';
 import 'dotenv/config';
 
