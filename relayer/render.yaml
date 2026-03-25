@@ -7,5 +7,5 @@ services:
     startCommand: node index.js
     envVars:
       - key: SPONSOR_SECRET
-        sync: false   # You set this manually in the Render dashboard
+        sync: false
     healthCheckPath: /health
