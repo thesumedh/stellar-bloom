@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: stellarbloom-relayer
+    runtime: node
+    rootDir: relayer
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: SPONSOR_SECRET
+        sync: false   # You set this manually in the Render dashboard
+    healthCheckPath: /health

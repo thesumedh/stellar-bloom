@@ -1,15 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function DeveloperPortal({ onBack }: { onBack: () => void }) {
   const [balanceAlert, setBalanceAlert] = useState(true);
   
-  // Pseudo-metrics for the "Funding Round" demo
-  const apiStats = {
-    totalTransactions: 1240,
-    xlmSponsored: "25.04",
-    gasRemaining: "174.96",
-    activeUsers: 84
-  };
+  // Dynamic metrics for the "Funding Round" demo
+  const [apiStats, setApiStats] = useState({
+    totalTransactions: 0,
+    xlmSponsored: "0.00",
+    gasRemaining: "100.00",
+    activeUsers: 0
+  });
+  const [relayStatus, setRelayStatus] = useState<'checking' | 'online' | 'offline'>('checking');
+
+  useEffect(() => {
+    const fetchStats = () => {
+      fetch('http://localhost:3000/api/stats/sb_test_5kq9v2x8m4j1c0p3')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            setApiStats(data.stats);
+            setRelayStatus('online');
+          }
+        })
+        .catch(() => setRelayStatus('offline'));
+    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0a0a0b] text-zinc-300 font-sans selection:bg-indigo-500/30">
@@ -20,7 +38,10 @@ export default function DeveloperPortal({ onBack }: { onBack: () => void }) {
             <div className="flex items-center cursor-pointer" onClick={onBack}>
               <span className="text-xl mr-2">✨</span>
               <span className="font-bold text-white tracking-tight">StellarBloom</span>
-              <span className="ml-3 px-2 py-0.5 rounded text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">Developer Portal</span>
+              <span className="ml-3 px-2 py-0.5 rounded text-xs font-medium bg-zinc-800 text-zinc-400 border border-zinc-700 flex items-center">
+                Developer Portal
+                <span className={`ml-2 w-2 h-2 rounded-full ${relayStatus === 'online' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]' : relayStatus === 'offline' ? 'bg-red-500' : 'bg-yellow-500'}`}></span>
+              </span>
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-zinc-500">Project:</span>

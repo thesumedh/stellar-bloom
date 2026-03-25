@@ -35,11 +35,32 @@ const apiKeysDb = {
 // --- Rate Limiting State for Intents ---
 const userRateLimits = new Map(); // pubKey -> { count, resetTime }
 
+// --- Nonce tracking to prevent replay attacks ---
+const seenNonces = new Set(); // store used nonces (in prod, use Redis with TTL)
+
 // --- Stellar Configuration ---
 const server = new Horizon.Server("https://horizon-testnet.stellar.org");
 const SPONSOR_SECRET = process.env.SPONSOR_SECRET;
 
 // --- Endpoints ---
+const startTime = Date.now();
+let totalTransactions = 0;
+let totalXlmSponsored = 0;
+
+// Health check — polled by the developer dashboard every 5s
+app.get('/health', (req, res) => {
+    const uptimeSec = Math.floor((Date.now() - startTime) / 1000);
+    const hours = Math.floor(uptimeSec / 3600);
+    const mins  = Math.floor((uptimeSec % 3600) / 60);
+    res.json({
+        status: 'ok',
+        totalTransactions,
+        xlmSponsored: totalXlmSponsored.toFixed(7),
+        uptime: hours > 0 ? `${hours}h ${mins}m` : `${mins}m`,
+    });
+});
+
+
 
 // 1. Core Gasless Relayer Endpoint (Now Multi-Tenant)
 app.post('/relay', async (req, res) => {
@@ -97,7 +118,6 @@ app.post('/relay', async (req, res) => {
     }
 });
 
-// 2. Developer Analytics Dashboard Data
 app.get('/api/stats/:apiKey', (req, res) => {
     const { apiKey } = req.params;
     const stats = apiKeysDb[apiKey];
@@ -105,13 +125,15 @@ app.get('/api/stats/:apiKey', (req, res) => {
         return res.status(404).json({ error: "API Key not found" });
     }
 
-    // Convert stroops to standard XLM for the dashboard
+    const sponsoredXlm = (stats.gasSponsored / 10000000);
     res.json({
         success: true,
         stats: {
             appName: stats.appName,
             totalTransactions: stats.transactions,
-            xlmSponsored: (stats.gasSponsored / 10000000).toFixed(6)
+            xlmSponsored: sponsoredXlm.toFixed(5),
+            activeUsers: userRateLimits.size,
+            gasRemaining: Math.max(0, 100 - sponsoredXlm).toFixed(2)
         }
     });
 });
@@ -146,7 +168,21 @@ app.post('/relay/intent', async (req, res) => {
 
         const intentData = JSON.parse(payload);
 
-        // 3. Construct Genuine Transaction on Testnet
+        // 2.5 Replay attack protection — reject duplicate nonces
+        const nonce = intentData.nonce;
+        if (!nonce) {
+            return res.status(400).json({ error: "Missing nonce in payload" });
+        }
+        if (seenNonces.has(nonce)) {
+            return res.status(400).json({ error: "Replay attack detected: nonce already used" });
+        }
+        seenNonces.add(nonce);
+        // Prune old nonces to avoid memory growth (keep last 10000)
+        if (seenNonces.size > 10000) {
+            const first = seenNonces.values().next().value;
+            seenNonces.delete(first);
+        }
+
         if (!SPONSOR_SECRET) {
             return res.status(500).json({ error: "Relayer missing SPONSOR_SECRET" });
         }

@@ -1,106 +1,58 @@
 import { Keypair } from '@stellar/stellar-sdk';
 
-export interface BloomSession {
-  user: {
-    email: string;
-    provider: string;
-  };
-  pubKey: string;
+export interface BloomResult {
+  success: boolean;
+  hash?: string;
+  userPubKey?: string;
+  error?: string;
 }
 
-export class StellarBloom {
-  private apiKey: string;
-  private relayerUrl: string;
+const RELAYER_URL = 'http://localhost:3000/relay/intent';
+const API_KEY = 'sb_test_5kq9v2x8m4j1c0p3';
 
-  constructor(apiKey: string, relayerUrl: string = 'http://localhost:3000/relay/intent') {
-    this.apiKey = apiKey;
-    this.relayerUrl = relayerUrl;
+/**
+ * StellarBloom SDK - Core gasless transaction layer.
+ * The user never knows a wallet was created. Everything is ephemeral and invisible.
+ */
+export async function executeGasless(action: string): Promise<BloomResult> {
+  // 1. Generate a fresh ephemeral keypair every time (truly disposable)
+  const ephemeralKeypair = Keypair.random();
+  const pubKey = ephemeralKeypair.publicKey();
+
+  // 2. Build the intent payload with a unique nonce to prevent replay attacks
+  const payload = JSON.stringify({
+    action,
+    userPubKey: pubKey,
+    nonce: crypto.randomUUID(),
+    timestamp: Date.now(),
+  });
+
+  // 3. Sign the intent locally (private key never leaves the browser)
+  const payloadBytes = new TextEncoder().encode(payload);
+  const signatureBuffer = ephemeralKeypair.sign(payloadBytes as unknown as Buffer);
+  const signature = btoa(
+    Array.from(new Uint8Array(signatureBuffer))
+      .map(b => String.fromCharCode(b))
+      .join('')
+  );
+
+  // 4. Send signed intent to Relayer — Relayer pays the gas
+  const res = await fetch(RELAYER_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+    },
+    body: JSON.stringify({ payload, signature, pubKey }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `Relayer error: ${res.status}`);
   }
 
-  /**
-   * Generates or retrieves the Session Keypair stored entirely locally.
-   * This is ephemeral and non-custodial.
-   */
-  private getSessionKeypair(): Keypair {
-    const saved = localStorage.getItem('bloom_session_secret');
-    if (saved) {
-      return Keypair.fromSecret(saved);
-    }
-    const kp = Keypair.random();
-    localStorage.setItem('bloom_session_secret', kp.secret());
-    return kp;
-  }
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || 'Transaction failed');
 
-  /**
-   * Initializes the environment.
-   */
-  public init(): void {
-    // Merely ensures a session key is ready
-    this.getSessionKeypair();
-  }
-
-  /**
-   * Simulates an OAuth social login overlay.
-   * In a real SDK, this triggers a Magic Link or Web3Auth popup.
-   * Returns a BloomSession containing the user's mapped Smart Account (pubKey).
-   */
-  public async login(provider: 'google' | 'email'): Promise<BloomSession> {
-    // Simulate network delay for OAuth
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    const sessionKp = this.getSessionKeypair();
-    
-    const sessionData = {
-      user: {
-        email: 'demo_user@gmail.com',
-        provider
-      },
-      pubKey: sessionKp.publicKey()
-    };
-    
-    localStorage.setItem('bloom_session_data', JSON.stringify(sessionData));
-    return sessionData;
-  }
-
-  /**
-   * Transmits an off-chain intent to the Relayer.
-   * The Relayer wraps the intent into a genuine sponsored Stellar Testnet transaction.
-   */
-  public async transact(intentData: any): Promise<{ success: boolean; hash?: string; error?: string; details?: any }> {
-    const sessionKp = this.getSessionKeypair();
-    const payload = JSON.stringify({
-      ...intentData,
-      timestamp: Date.now()
-    });
-
-    // 1. Sign the intent locally using the ephemeral session key
-    const signature = sessionKp.sign(Buffer.from(payload));
-
-    // 2. Submit to Relayer
-    const res = await fetch(this.relayerUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': this.apiKey
-      },
-      body: JSON.stringify({
-        payload,
-        signature: signature.toString('hex'),
-        pubKey: sessionKp.publicKey()
-      })
-    });
-
-    return await res.json();
-  }
-  
-  /**
-   * Clears the active session
-   */
-  public logout(): void {
-    localStorage.removeItem('bloom_session_secret');
-    localStorage.removeItem('bloom_session_data');
-  }
+  return { success: true, hash: data.hash, userPubKey: pubKey };
 }
-
-// Export a default singleton for the demo
-export const bloom = new StellarBloom('sb_test_5kq9v2x8m4j1c0p3');

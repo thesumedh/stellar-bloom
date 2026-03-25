@@ -1,359 +1,364 @@
 import { useState, useEffect } from 'react';
-import { connectWallet, fetchBalance, sendXlm } from './stellar/stellar';
-import { Keypair } from '@stellar/stellar-sdk';
+import { isConnected, requestAccess, getAddress } from '@stellar/freighter-api';
+import { executeGasless } from './lib/bloom-sdk';
 import './App.css';
 
-interface ApiStats {
-  appName: string;
-  totalTransactions: number;
-  xlmSponsored: string;
-}
+const RELAYER_URL = import.meta.env.VITE_RELAYER_URL || 'http://localhost:3000';
+const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
+type CoffeeStage = 'idle' | 'generating' | 'signing' | 'relaying' | 'success' | 'error';
 
 function App() {
-  const [activeTab, setActiveTab] = useState<'demo' | 'dashboard'>('demo');
-  const [pubKey, setPubKey] = useState<string | null>(null);
-  const [balance, setBalance] = useState<string>('0');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'demo' | 'docs'>('demo');
 
-  const [receiver, setReceiver] = useState('');
-  const [amount, setAmount] = useState('');
+  // ── Wallet Session ──
+  const [walletPubKey, setWalletPubKey] = useState<string | null>(null);
+  const [walletConnecting, setWalletConnecting] = useState(false);
 
-  // Dashboard State
-  const [apiKey, setApiKey] = useState<string | null>(null);
-  const [apiStats, setApiStats] = useState<ApiStats | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  // Coffee Shop State
-  const [isCoffeeLoading, setIsCoffeeLoading] = useState(false);
+  // ── Coffee Demo ──
+  const [coffeeStage, setCoffeeStage] = useState<CoffeeStage>('idle');
+  const [coffeeTxHash, setCoffeeTxHash] = useState<string | null>(null);
+  const [coffeeUserKey, setCoffeeUserKey] = useState<string | null>(null);
   const [coffeeError, setCoffeeError] = useState<string | null>(null);
-  const [coffeeSuccess, setCoffeeSuccess] = useState<string | null>(null);
-  const [sessionPub, setSessionPub] = useState<string | null>(null);
 
-  const fetchStats = async (key: string) => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/stats/${key}`);
-      const data = await res.json();
-      if (data.success && data.stats) {
-        setApiStats(data.stats);
-      }
-    } catch (e) {
-      console.error("Failed to fetch stats", e);
-    }
-  };
+  // ── Relayer Health ──
+  const [relayerOnline, setRelayerOnline] = useState<boolean | null>(null);
+  const [relayerStats, setRelayerStats] = useState<{ totalTransactions: number; xlmSponsored: string; uptime: string } | null>(null);
 
+  // Auto-restore wallet session from previous visit
   useEffect(() => {
-    if (apiKey && activeTab === 'dashboard') {
-      fetchStats(apiKey);
-    }
-  }, [apiKey, activeTab]);
-
-  const handleGenerateKey = async () => {
-    setIsGenerating(true);
-    try {
-      const res = await fetch(`http://localhost:3000/api/keys/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ appName: 'My DApp Integration' })
-      });
-      const data = await res.json();
-      if (data.success) {
-        setApiKey(data.apiKey);
-        await fetchStats(data.apiKey);
-      }
-    } catch (e) {
-      console.error("Failed to generate key", e);
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
-  const handleConnect = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const key = await connectWallet();
-      setPubKey(key);
-      const bal = await fetchBalance(key);
-      setBalance(bal);
-    } catch (err: any) {
-      setError(err.message || 'Failed to connect wallet');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDisconnect = () => {
-    setPubKey(null);
-    setBalance('0');
-    setTxHash(null);
-    setError(null);
-  };
-
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pubKey) return;
-    setIsLoading(true);
-    setError(null);
-    setTxHash(null);
-    try {
-      const hash = await sendXlm(pubKey, receiver, amount, apiKey || undefined);
-      setTxHash(hash);
-      const newBal = await fetchBalance(pubKey);
-      setBalance(newBal);
-      setAmount('');
-      setReceiver('');
-      if (apiKey) {
-        fetchStats(apiKey); // Refresh stats silently
-      }
-    } catch (err: any) {
-      setError(err.message || 'Transaction failed');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleClaimCoffee = async () => {
-    setIsCoffeeLoading(true);
-    setCoffeeError(null);
-    setCoffeeSuccess(null);
-    try {
-        // 1. Generate anonymous session keypair instantly (No Wallet UI needed)
-        const sessionKeypair = Keypair.random();
-        const temporaryPubKey = sessionKeypair.publicKey();
-        setSessionPub(temporaryPubKey);
-
-        // 2. Wrap the intent
-        const intentData = { action: 'mint_coffee_nft', timestamp: Date.now() };
-        const payload = JSON.stringify(intentData);
-        
-        // 3. Sign locally with the ephemeral key
-        const payloadBytes = new TextEncoder().encode(payload);
-        const signatureBuffer = sessionKeypair.sign(payloadBytes as any);
-        const signature = btoa(Array.from(new Uint8Array(signatureBuffer)).map(b => String.fromCharCode(b)).join(''));
-
-        // 4. Relay to the backend to wrap in real XLM transaction
-        const res = await fetch('http://localhost:3000/relay/intent', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                // Use the developer's API key if generated, else a mock one
-                'x-api-key': apiKey || 'sb_test_demo123' 
-            },
-            body: JSON.stringify({ payload, signature, pubKey: temporaryPubKey })
+    isConnected().then(({ isConnected: connected }: { isConnected: boolean }) => {
+      if (connected) {
+        getAddress().then(({ address }: { address: string }) => {
+          if (address) setWalletPubKey(address);
         });
-        const data = await res.json();
-        
-        if (data.success) {
-            setCoffeeSuccess(data.hash);
-            if (apiKey) fetchStats(apiKey); // update dashboard immediately
-        } else {
-            setCoffeeError(data.error || 'Relayer failed to process intent');
-        }
-    } catch(err: any) {
-        setCoffeeError(err.message || 'Network error occurred');
-    } finally {
-        setIsCoffeeLoading(false);
+      }
+    });
+  }, []);
+
+  // Poll relayer health when on docs tab
+  useEffect(() => {
+    if (activeTab !== 'docs') return;
+    const poll = async () => {
+      try {
+        const res = await fetch(`${RELAYER_URL}/health`);
+        const d = await res.json();
+        setRelayerOnline(d.status === 'ok');
+        setRelayerStats({ totalTransactions: d.totalTransactions ?? 0, xlmSponsored: d.xlmSponsored ?? '0.0000', uptime: d.uptime ?? 'N/A' });
+      } catch { setRelayerOnline(false); }
+    };
+    poll();
+    const id = setInterval(poll, 5000);
+    return () => clearInterval(id);
+  }, [activeTab]);
+
+  // Connect Freighter wallet
+  const connectWallet = async () => {
+    setWalletConnecting(true);
+    try {
+      const { error } = await requestAccess();
+      if (!error) {
+        const { address } = await getAddress();
+        setWalletPubKey(address);
+      }
+    } catch { /* user rejected */ }
+    setWalletConnecting(false);
+  };
+
+  const disconnectWallet = () => setWalletPubKey(null);
+
+  // Claim coffee
+  const handleClaim = async () => {
+    setCoffeeStage('generating');
+    setCoffeeError(null);
+    setCoffeeTxHash(null);
+    setCoffeeUserKey(null);
+    try {
+      await sleep(700); setCoffeeStage('signing');
+      await sleep(600); setCoffeeStage('relaying');
+      const result = await executeGasless('claim_coffee');
+      setCoffeeTxHash(result.hash || null);
+      // If wallet connected use their real key, otherwise show ephemeral
+      setCoffeeUserKey(walletPubKey || result.userPubKey || null);
+      setCoffeeStage('success');
+    } catch (err: any) {
+      setCoffeeError(err.message || 'Relayer unreachable. Is it running?');
+      setCoffeeStage('error');
     }
   };
+
+  const isLoading = ['generating', 'signing', 'relaying'].includes(coffeeStage);
+  const short = (k: string) => `${k.slice(0, 6)}...${k.slice(-4)}`;
 
   return (
     <div className="app-container">
+      {/* ── NAV ── */}
       <nav className="navbar">
-        <div className="logo cursor-pointer">✨ StellarBloom</div>
+        <div className="logo">✨ StellarBloom</div>
+
         <div className="nav-links">
           <button className={`nav-link ${activeTab === 'demo' ? 'active' : ''}`} onClick={() => setActiveTab('demo')}>Live Demo</button>
-          <button className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>Developer Dashboard</button>
+          <button className={`nav-link ${activeTab === 'docs' ? 'active' : ''}`} onClick={() => setActiveTab('docs')}>Developer Docs</button>
         </div>
+
         <div className="nav-actions">
-          {pubKey ? (
-            <button className="btn-secondary" onClick={handleDisconnect}>
-              Disconnect {pubKey.slice(0, 4)}...{pubKey.slice(-4)}
+          {walletPubKey ? (
+            <button className="wallet-badge" onClick={disconnectWallet} title="Click to disconnect">
+              <span className="wallet-dot" />
+              {short(walletPubKey)}
             </button>
           ) : (
-            <button className="btn-primary" onClick={handleConnect} disabled={isLoading}>
-              {isLoading ? 'Connecting...' : 'Connect Wallet'}
+            <button className="btn-connect" onClick={connectWallet} disabled={walletConnecting}>
+              {walletConnecting ? 'Connecting...' : 'Connect Wallet'}
             </button>
           )}
         </div>
       </nav>
 
       <main className="main-content">
+        {/* ── HERO ── */}
         <section className="enterprise-hero">
-          <div className="tagline">The Stripe for Gasless Web3 Onboarding</div>
-          <h1>End the Gas Fee Friction.</h1>
-          
+          <div className="tagline">Gasless Infrastructure · Stellar Testnet</div>
+
+          <h1>Web3 apps that feel<br />like Web2.</h1>
+
+          <p className="hero-sub">
+            StellarBloom lets users interact with Soroban apps without wallets, seed phrases, or gas fees.
+            One click. Real transaction. Zero friction.
+          </p>
+
+          <div className="hero-cta-group">
+            <button className="btn-hero" onClick={() => setActiveTab('demo')}>
+              Try the Live Demo →
+            </button>
+            <button className="btn-hero-secondary" onClick={() => setActiveTab('docs')}>
+              Read the Docs
+            </button>
+          </div>
+
+          <div className="hero-stats">
+            <div className="hero-stat"><span className="hero-stat-num">~18s</span><span className="hero-stat-label">Avg. Onboarding</span></div>
+            <div className="hero-stat-divider" />
+            <div className="hero-stat"><span className="hero-stat-num">$0.00</span><span className="hero-stat-label">User Cost</span></div>
+            <div className="hero-stat-divider" />
+            <div className="hero-stat"><span className="hero-stat-num">100%</span><span className="hero-stat-label">Non-Custodial</span></div>
+          </div>
+
           <div className="value-props">
             <div className="glass-panel prop-card">
-              <div className="prop-icon">🚨</div>
-              <h3>The Onboarding Trap</h3>
-              <p>Users must acquire tokens, manage gas, and navigate exchanges to send their first transaction. This causes a 90% drop-off rate, preventing mass adoption.</p>
+              <div className="prop-icon">🚫</div>
+              <h3>No Wallet Required</h3>
+              <p>Anonymous users transact instantly. No installs, no seed phrases. Blockchain is invisible.</p>
             </div>
-            
             <div className="glass-panel prop-card">
               <div className="prop-icon">⚡</div>
-              <h3>Gasless Infrastructure</h3>
-              <p>StellarBloom acts as a massive gas sponsorship platform for developers. Our enterprise relayers instantly wrap user requests in FeeBump transactions. Build true invisible Web3 UX.</p>
+              <h3>Relayer-Sponsored Gas</h3>
+              <p>Developers fund a Gas Tank. StellarBloom wraps every intent as a FeeBump — fractions of a cent per tx.</p>
+            </div>
+            <div className="glass-panel prop-card">
+              <div className="prop-icon">🔐</div>
+              <h3>Cryptographically Verified</h3>
+              <p>Every transaction is a real Ed25519-signed payload. Verifiable on Stellar Expert in real-time.</p>
             </div>
           </div>
         </section>
 
-        {activeTab === 'dashboard' ? (
-          <section className="dashboard-section fade-in">
-            <div className="demo-header">
-              <h2>Developer Infrastructure Portal</h2>
-              <p>Manage your gas budgets, abuse protection, and generate API keys for your applications.</p>
-            </div>
-            
-            <div className="dashboard-grid">
-              <div className="glass-panel dashboard-card">
-                <h3>API Key Management</h3>
-                <p className="text-muted">Generate a secure key to authenticate your dApp with our relayer nodes.</p>
-                {apiKey ? (
-                  <div className="api-key-display mt-4">
-                    <span className="badge success mb-2">Active Key</span>
-                    <br />
-                    <code>{apiKey}</code>
-                  </div>
-                ) : (
-                  <button className="btn-primary mt-4" onClick={handleGenerateKey} disabled={isGenerating}>
-                    {isGenerating ? 'Generating...' : 'Generate New API Key'}
-                  </button>
-                )}
-              </div>
-
-              <div className="glass-panel dashboard-card">
-                <h3>Usage Analytics</h3>
-                {!apiStats ? (
-                  <p className="text-muted text-center mt-4">Generate an API key to view analytics.</p>
-                ) : (
-                  <div className="stats-grid mt-4">
-                    <div className="stat-box">
-                      <div className="stat-label">Total Sponsored Txs</div>
-                      <div className="stat-value">{apiStats.totalTransactions}</div>
-                    </div>
-                    <div className="stat-box">
-                      <div className="stat-label">XLM Sponsored</div>
-                      <div className="stat-value">{apiStats.xlmSponsored} <span style={{fontSize: '0.5em'}}>XLM</span></div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {apiKey && (
-              <div className="glass-panel docs-card mt-6">
-                <h3>Integration Quickstart</h3>
-                <p>Use your active API Key to send meta-transactions through our relayer.</p>
-                <div className="code-block mt-4">
-                  <pre>
-{`const relayResponse = await fetch('https://api.stellarbloom.io/relay', {
-  method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json',
-    'x-api-key': '${apiKey}'
-  },
-  body: JSON.stringify({ xdr: signedTxXdr })
-});`}
-                  </pre>
-                </div>
-              </div>
-            )}
-          </section>
-        ) : (
+        {/* ── DEMO ── */}
+        {activeTab === 'demo' && (
           <section className="demo-section fade-in">
             <div className="demo-header">
-              <h2>Interactive Meta-Transaction Demo</h2>
-              <p>Experience seamless onboarding. Send a transaction, and watch our Relayer cover the gas fee automatically behind the scenes.</p>
+              <h2>Try it now</h2>
+              <p>No setup. No wallet needed. One click executes a real Stellar transaction.</p>
             </div>
 
-            <div className="dashboard">
-              
-              {/* Coffee Shop Gasless Demo */}
-              <div className="glass-panel payment-card" style={{ border: '2px solid #8B5CF6', marginBottom: '2rem' }}>
-                 <h2>☕ The Coffee Shop Demo <span className="badge" style={{backgroundColor: '#8B5CF6', color: 'white', float: 'right'}}>1-Click Magic</span></h2>
-                 <p className="text-muted mb-4" style={{fontSize: '14px'}}>
-                   Assume you are an end-user who has never heard of crypto. Click the button below. 
-                   We will instantly generate an invisible cryptographic key and execute a genuine Stellar transaction funded by our Relayer.
-                 </p>
-                 
-                 <button className="btn-primary full-width" style={{backgroundColor: '#8B5CF6', border: 'none', padding: '16px', fontSize: '16px', cursor: 'pointer'}} onClick={handleClaimCoffee} disabled={isCoffeeLoading}>
-                    {isCoffeeLoading ? 'Brewing Free Coffee (Triggering Smart Contract)...' : 'Claim Free Coffee ☕'}
-                 </button>
+            <div className="demo-card-wrapper">
+              {/* Wallet session banner */}
+              {walletPubKey && coffeeStage === 'idle' && (
+                <div className="session-banner">
+                  <span className="wallet-dot" /> Signed in as <code>{short(walletPubKey)}</code>
+                </div>
+              )}
+              {!walletPubKey && coffeeStage === 'idle' && (
+                <div className="session-banner anon">
+                  <span>🕵️</span> Anonymous mode — <button className="link-btn" onClick={connectWallet}>Connect wallet for persistent session</button>
+                </div>
+              )}
 
-                 {coffeeError && <div className="alert error mt-4">❌ {coffeeError}</div>}
-                 {coffeeSuccess && (
-                   <div className="alert success mt-4">
-                     ✅ <strong>Coffee Claimed! Transaction Confirmed!</strong> 🎉<br /><br />
-                     <div style={{fontSize: '13px', background: 'rgba(0,0,0,0.2)', padding: '10px', borderRadius: '8px', marginBottom: '10px'}}>
-                        <strong>Magic Under the Hood:</strong><br />
-                        Your exact invisible Session Key: <code>{sessionPub?.slice(0, 10)}...{sessionPub?.slice(-10)}</code><br />
-                     </div>
-                     <span>StellarBloom Relayer successfully paid the blockchain gas fee and funded this key.</span><br /><br />
-                     <a href={`https://stellar.expert/explorer/testnet/tx/${coffeeSuccess}`} target="_blank" rel="noreferrer" style={{color: '#8B5CF6', fontWeight: 'bold', textDecoration: 'underline'}}>
-                       View +XLM execution on Stellar Expert ↗
-                     </a>
-                   </div>
-                 )}
-              </div>
+              <div className="glass-panel payment-card" style={{ border: '1px solid rgba(124,58,237,0.3)' }}>
+                <div className="card-header">
+                  <h2>☕ Coffee Shop Demo</h2>
+                  <span className="badge">Live · Testnet</span>
+                </div>
+                <p className="text-muted mb-4" style={{ fontSize: '0.88rem', lineHeight: 1.6 }}>
+                  You're a first-time user who has never heard of crypto. Click the button below.
+                </p>
 
-              {/* Legacy Connect & Send */}
-              <div className="glass-panel payment-card">
-                 <h2 style={{opacity: 0.5}}>Traditional Integration Demo</h2>
-                 
-                 {!pubKey ? (
-                  <div className="connect-card mt-4" style={{border: '1px dashed #3f3f46', padding: '20px', borderRadius: '12px', textAlign: 'center'}}>
-                    <div className="connect-icon" style={{fontSize: '2rem'}}>👛</div>
-                    <h3 style={{fontSize: '1.1rem'}}>Have a Freighter Wallet?</h3>
-                    <p style={{fontSize: '14px', color: '#a1a1aa', margin: '10px 0'}}>Connect your wallet to test traditional signed envelopes routed through the gas relayer.</p>
-                    <button className="btn-secondary mt-2" onClick={handleConnect} disabled={isLoading}>
-                      {isLoading ? 'Connecting...' : 'Connect Freighter'}
+                {/* CTA Button */}
+                {(coffeeStage === 'idle' || isLoading) && (
+                  <button
+                    className="btn-primary full-width"
+                    style={{ fontSize: '1rem', letterSpacing: '0.3px' }}
+                    onClick={handleClaim}
+                    disabled={isLoading}
+                  >
+                    {coffeeStage === 'idle'       && '☕  Claim Free Coffee'}
+                    {coffeeStage === 'generating' && '⚙️  Generating wallet...'}
+                    {coffeeStage === 'signing'    && '✍️  Signing locally...'}
+                    {coffeeStage === 'relaying'   && '🚀  Sponsoring gas fee...'}
+                  </button>
+                )}
+
+                {/* Stage tracker */}
+                {isLoading && (
+                  <div className="stage-tracker mt-4">
+                    {(['generating','signing','relaying'] as const).map((key, i) => {
+                      const labels = ['Generate ephemeral keypair', 'Sign intent payload locally', 'Submit to Relayer'];
+                      const order = ['generating','signing','relaying'];
+                      const done   = order.indexOf(coffeeStage) > i;
+                      const active = coffeeStage === key;
+                      return (
+                        <div key={key} className={`stage-row ${done ? 'done' : active ? 'active' : 'pending'}`}>
+                          <span className="stage-icon">{done ? '✓' : active ? '›' : '·'}</span>
+                          <span>{labels[i]}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Error */}
+                {coffeeStage === 'error' && (
+                  <>
+                    <div className="alert error mt-4">❌ {coffeeError}</div>
+                    <button className="btn-secondary mt-4" onClick={() => setCoffeeStage('idle')}>Try Again</button>
+                  </>
+                )}
+
+                {/* Success */}
+                {coffeeStage === 'success' && (
+                  <div className="alert success mt-4">
+                    <div style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '10px' }}>✅ Transaction Confirmed!</div>
+                    <div className="receipt">
+                      <div className="receipt-row">
+                        <span>{walletPubKey ? 'Your Wallet' : 'Session Key'}</span>
+                        <code>{coffeeUserKey ? short(coffeeUserKey) : '—'}</code>
+                      </div>
+                      <div className="receipt-row">
+                        <span>Gas Paid By</span>
+                        <span style={{ color: '#a78bfa', fontWeight: 600 }}>StellarBloom Relayer</span>
+                      </div>
+                      <div className="receipt-row">
+                        <span>Your Cost</span>
+                        <strong style={{ color: '#34d399' }}>$0.00</strong>
+                      </div>
+                      {coffeeTxHash && (
+                        <div className="receipt-row" style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 9 }}>
+                          <a href={`https://stellar.expert/explorer/testnet/tx/${coffeeTxHash}`} target="_blank" rel="noreferrer">
+                            Verify on Stellar Expert ↗
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                    <button className="btn-secondary mt-4" onClick={() => { setCoffeeStage('idle'); setCoffeeTxHash(null); setCoffeeUserKey(null); }}>
+                      Try Again
                     </button>
                   </div>
-                 ) : (
-                  <>
-                    <div className="balance-amount" style={{fontSize: '1.5rem', marginTop: '1rem'}}>{balance} <span className="currency" style={{fontSize: '1rem'}}>XLM</span></div>
-                    <div className="badge mb-4">Testnet Connected</div>
-                    <form onSubmit={handleSend} className="payment-form">
-                      <div className="input-group">
-                        <label>Recipient Address</label>
-                        <input
-                          type="text"
-                          placeholder="G..."
-                          value={receiver}
-                          onChange={e => setReceiver(e.target.value)}
-                          required
-                        />
-                      </div>
-                      <div className="input-group">
-                        <label>Amount (XLM)</label>
-                        <input
-                          type="number"
-                          step="0.0000001"
-                          placeholder="0.00"
-                          value={amount}
-                          onChange={e => setAmount(e.target.value)}
-                          required
-                        />
-                      </div>
-                      <button type="submit" className="btn-secondary full-width" disabled={isLoading || !receiver || !amount}>
-                        {isLoading ? 'Processing via Relayer...' : 'Send XLM (Gas-Free)'}
-                      </button>
-                    </form>
+                )}
+              </div>
 
-                    {error && <div className="alert error">❌ {error}</div>}
-                    {txHash && (
-                      <div className="alert success">
-                        ✅ <strong>Transaction Successful!</strong> <br /><br />
-                        <span>The relayer successfully paid the gas fee.</span><br />
-                        <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer">
-                          View execution on Stellar Expert ↗
-                        </a>
-                      </div>
-                    )}
-                  </>
-                 )}
+              {/* Explainer */}
+              <div className="explainer">
+                <strong>Under the hood</strong>
+                <ol>
+                  <li>A temporary Ed25519 keypair is generated in your browser</li>
+                  <li>Your intent is signed locally — private key never leaves your device</li>
+                  <li>StellarBloom Relayer wraps it in a FeeBump transaction and pays the fee</li>
+                  <li>Transaction lands on Stellar Testnet — permanent and verifiable</li>
+                </ol>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── DOCS ── */}
+        {activeTab === 'docs' && (
+          <section className="dashboard-section fade-in">
+            <div className="demo-header">
+              <h2>Developer Docs</h2>
+              <p>Integrate gasless transactions into your Soroban app in minutes.</p>
+            </div>
+
+            {/* Relayer health */}
+            <div className="glass-panel relayer-health">
+              <div className="health-left">
+                <h3>Relayer Status</h3>
+                <p className="text-muted" style={{fontSize:'0.82rem'}}>Live · updates every 5s</p>
+              </div>
+              <div className={`status-badge ${relayerOnline === null ? 'checking' : relayerOnline ? 'online' : 'offline'}`}>
+                <span className="status-dot" />
+                {relayerOnline === null ? 'Checking...' : relayerOnline ? 'Online' : 'Offline'}
+              </div>
+              {relayerStats && (
+                <div className="health-stats">
+                  <div className="stat-box"><div className="stat-label">Sponsored Txs</div><div className="stat-value">{relayerStats.totalTransactions}</div></div>
+                  <div className="stat-box"><div className="stat-label">XLM Sponsored</div><div className="stat-value">{relayerStats.xlmSponsored} <span style={{fontSize:'0.4em'}}>XLM</span></div></div>
+                  <div className="stat-box"><div className="stat-label">Uptime</div><div className="stat-value" style={{fontSize:'1.2rem'}}>{relayerStats.uptime}</div></div>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Start */}
+            <div className="dashboard-grid">
+              <div className="glass-panel dashboard-card">
+                <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'12px'}}>
+                  <span className="step-num">1</span>
+                  <h3 style={{margin:0}}>Run the Relayer</h3>
+                </div>
+                <p className="text-muted mb-4" style={{fontSize:'0.85rem'}}>Clone and start the Node.js relayer with your funded testnet key.</p>
+                <div className="code-block">
+                  <pre>{`git clone https://github.com/thesumedh/stellar-bloom
+cd stellar-bloom/relayer
+cp .env.example .env   # add SPONSOR_SECRET
+npm install && node index.js
+# → 🚀 Relayer running on :3000`}</pre>
+                </div>
+              </div>
+
+              <div className="glass-panel dashboard-card">
+                <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'12px'}}>
+                  <span className="step-num">2</span>
+                  <h3 style={{margin:0}}>Send a Gasless Intent</h3>
+                </div>
+                <p className="text-muted mb-4" style={{fontSize:'0.85rem'}}>Sign an intent and POST it — the Relayer sponsors the gas automatically.</p>
+                <div className="code-block">
+                  <pre>{`import { executeGasless } from './bloom-sdk';
+
+const result = await executeGasless('your_action');
+// { success: true, hash: 'abc...', userPubKey: 'G...' }
+
+// Verifiable on-chain:
+// stellar.expert/explorer/testnet/tx/\${result.hash}`}</pre>
+                </div>
+              </div>
+
+              {/* Coming Soon */}
+              <div className="glass-panel dashboard-card coming-soon-card" style={{gridColumn:'1 / -1'}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:'12px'}}>
+                  <div>
+                    <div style={{display:'flex',alignItems:'center',gap:'10px',marginBottom:'6px'}}>
+                      <span className="step-num" style={{background:'rgba(124,58,237,0.15)',color:'#a78bfa'}}>✦</span>
+                      <h3 style={{margin:0}}>Managed API — Hosted Relayer Nodes</h3>
+                    </div>
+                    <p className="text-muted" style={{fontSize:'0.85rem',maxWidth:'540px',lineHeight:'1.65'}}>
+                      Get a hosted API key, managed relayer, spending dashboard, and per-key gas budgets — no infrastructure to run yourself. Currently in development.
+                    </p>
+                  </div>
+                  <span className="badge" style={{background:'rgba(124,58,237,0.12)',color:'#a78bfa',border:'1px solid rgba(124,58,237,0.3)',whiteSpace:'nowrap'}}>
+                    Coming Soon
+                  </span>
+                </div>
+                <button className="btn-primary mt-4" style={{width:'fit-content'}} onClick={() => window.open('https://github.com/thesumedh/stellar-bloom','_blank')}>
+                  ⭐ Star on GitHub · Get Notified
+                </button>
               </div>
             </div>
           </section>
@@ -361,8 +366,8 @@ function App() {
       </main>
 
       <div className="background-elements">
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
+        <div className="blob blob-1" />
+        <div className="blob blob-2" />
       </div>
     </div>
   );

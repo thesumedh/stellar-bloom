@@ -1,207 +1,215 @@
-import { useState, useEffect } from 'react';
-import { bloom, type BloomSession } from '../../lib/bloom-sdk';
+import { useState } from 'react';
+import { executeGasless } from '../../lib/bloom-sdk';
+
+type Stage =
+  | 'idle'
+  | 'generating'
+  | 'signing'
+  | 'relaying'
+  | 'confirming'
+  | 'success'
+  | 'error';
+
+const STAGES: Record<string, { label: string; detail: string }> = {
+  generating: { label: 'Generating invisible wallet...', detail: 'Creating a temporary Ed25519 keypair in your browser' },
+  signing:    { label: 'Signing intent locally...',     detail: 'Private key never leaves your device' },
+  relaying:   { label: 'Submitting to Relayer...',      detail: 'StellarBloom sponsors your gas fee' },
+  confirming: { label: 'Writing to Soroban ledger...',  detail: 'Horizon is confirming the FeeBump transaction' },
+};
 
 export default function CoffeeShop({ onBack }: { onBack: () => void }) {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [progress, setProgress] = useState(0);
-
-  const [session, setSession] = useState<BloomSession | null>(null);
+  const [stage, setStage] = useState<Stage>('idle');
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [userPubKey, setUserPubKey] = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    bloom.init();
-  }, []);
-  
-  const handleLogin = async () => {
-    setIsProcessing(true);
-    let p = 0;
-    const interval = setInterval(() => { p = Math.min(p + 15, 90); setProgress(p); }, 400);
-    
-    try {
-      const activeSession = await bloom.login('google');
-      setSession(activeSession);
-      clearInterval(interval);
-      setProgress(100);
-      setTimeout(() => {
-        setIsProcessing(false);
-        setStep(2);
-        setProgress(0);
-      }, 500);
-    } catch (err) {
-      clearInterval(interval);
-      setIsProcessing(false);
-      console.error(err);
-    }
-  };
+  const handleClaim = async () => {
+    setStage('generating');
+    setErrorMsg(null);
+    setTxHash(null);
 
-  const handleMint = async () => {
-    setIsProcessing(true);
-    setError(null);
-    let p = 0;
-    const interval = setInterval(() => { p = Math.min(p + 10, 85); setProgress(p); }, 600);
-    
     try {
-      const response = await bloom.transact({ action: 'mint_coffee' });
-      clearInterval(interval);
-      setProgress(100);
+      // Simulate deterministic visual stages for UX clarity
+      await delay(700);  setStage('signing');
+      await delay(600);  setStage('relaying');
       
-      if (response.success) {
-        setTxHash(response.hash || null);
-        setTimeout(() => {
-          setIsProcessing(false);
-          setStep(3);
-        }, 500);
-      } else {
-        throw new Error(response.error || "Failed");
-      }
+      // Fire the actual gasless transaction in parallel with the "confirming" stage
+      const txPromise = executeGasless('claim_coffee');
+      setStage('confirming');
+      
+      const result = await txPromise;
+      setTxHash(result.hash || null);
+      setUserPubKey(result.userPubKey || null);
+      setStage('success');
     } catch (err: any) {
-      clearInterval(interval);
-      setIsProcessing(false);
-      setError(err.message || 'Minting failed. Ensure the relayer is running.');
+      setErrorMsg(err.message || 'Something went wrong. Is the Relayer running?');
+      setStage('error');
     }
   };
+
+  const handleReset = () => {
+    setStage('idle');
+    setTxHash(null);
+    setUserPubKey(null);
+    setErrorMsg(null);
+  };
+
+  const isLoading = ['generating', 'signing', 'relaying', 'confirming'].includes(stage);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
-      <div className="absolute top-4 left-4">
-        <button onClick={onBack} className="text-slate-500 hover:text-slate-900 font-medium text-sm flex items-center">
-          ← Back to StellarBloom
+    <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center py-12 px-4 font-sans relative overflow-hidden text-zinc-300">
+
+      {/* Background glow */}
+      <div className="absolute inset-0 bg-grid-white bg-grid-white-fade z-0 pointer-events-none opacity-40" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-600/10 rounded-full filter blur-[120px] z-0 pointer-events-none" />
+
+      {/* Back button */}
+      <div className="absolute top-6 left-6 z-20">
+        <button onClick={onBack} className="text-zinc-600 hover:text-white text-sm flex items-center gap-1 transition-colors">
+          ← Back
         </button>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="w-16 h-16 bg-white rounded-2xl shadow-sm border border-slate-100 flex items-center justify-center mx-auto text-3xl mb-4">
-          ☕
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-sm">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mx-auto text-3xl mb-4 shadow-lg">
+            ☕
+          </div>
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Virtual Coffee Shop</h1>
+          <p className="text-zinc-500 text-sm mt-2">No wallet. No crypto. No fees. Just click.</p>
         </div>
-        <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900">
-          The Virtual Coffee Shop
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          Experience frictionless Web3. No wallets, no seed phrases, no crypto.
-        </p>
-      </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl shadow-slate-200/50 sm:rounded-3xl sm:px-10 border border-slate-100/50 relative overflow-hidden">
-          
-          {/* Step 1: Login */}
-          {step === 1 && (
-            <div className="fade-in">
-              <h3 className="text-lg font-medium text-slate-900 mb-6 text-center">Claim Your Free Morning Coffee</h3>
-              
-              <button 
-                onClick={handleLogin}
-                disabled={isProcessing}
-                className="w-full flex justify-center items-center py-3 px-4 border border-slate-300 rounded-xl shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-50"
-              >
-                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5 mr-3" />
-                {isProcessing ? 'Generating Smart Wallet...' : 'Continue with Google'}
-              </button>
-              
-              {isProcessing && (
-                <div className="mt-6">
-                  <div className="w-full bg-slate-100 rounded-full h-1.5 mb-2 overflow-hidden">
-                    <div className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
-                  </div>
-                  <p className="text-xs text-center text-slate-500">StellarBloom is provisioning a Soroban Smart Contract Account mapped to your session...</p>
-                </div>
-              )}
-            </div>
-          )}
+        <div className="bg-zinc-900/70 backdrop-blur-2xl border border-zinc-800/80 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+          {/* Top gradient line */}
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
 
-          {/* Step 2: Minting */}
-          {step === 2 && (
+          {/* IDLE */}
+          {stage === 'idle' && (
             <div className="fade-in text-center">
-              <div className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-600/20 mb-6">
-                Connected: {session ? session.pubKey.slice(0, 4) + "..." + session.pubKey.slice(-4) : "Unknown"}
+              <div className="bg-black/40 border border-zinc-800 rounded-2xl p-6 mb-6">
+                <div className="text-4xl mb-3">🎟️</div>
+                <p className="text-white font-bold text-sm">Soroban Coffee Token</p>
+                <p className="text-zinc-500 text-xs mt-1">Free for new users — sponsored by StellarBloom</p>
               </div>
-              
-              <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 mb-6">
-                <div className="text-4xl mb-4">🎟️</div>
-                <h4 className="text-slate-900 font-medium mb-1">Soroban Coffee NFT</h4>
-                <p className="text-xs text-slate-500">Mint your proof-of-concept token directly to your new Smart Account.</p>
-              </div>
-
-              <button 
-                onClick={handleMint}
-                disabled={isProcessing}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:opacity-70"
+              <button
+                onClick={handleClaim}
+                className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-2xl transition-all shadow-[0_0_24px_rgba(99,102,241,0.3)] hover:shadow-[0_0_36px_rgba(99,102,241,0.5)] text-sm tracking-wide"
               >
-                {isProcessing ? 'Waiting for Relayer...' : 'Mint Coffee NFT (Gasless)'}
+                Claim Free Coffee ☕
               </button>
-
-              {error && (
-                <div className="mt-4 p-3 bg-red-50 rounded-md text-red-600 text-sm">
-                  {error}
-                </div>
-              )}
-
-              {isProcessing && (
-                <div className="mt-6 text-left">
-                  <div className="w-full bg-slate-100 rounded-full h-1.5 mb-3 overflow-hidden">
-                    <div className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }}></div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-xs text-slate-500 flex items-center">
-                      <span className="w-4">✓</span> Intent signed via Browser Session Key
-                    </p>
-                    <p className="text-xs text-slate-500 flex items-center">
-                      <span className="w-4">{progress > 30 ? '✓' : '•'}</span> StellarBloom Relayer received Request
-                    </p>
-                    <p className="text-xs text-slate-500 flex items-center">
-                      <span className="w-4">{progress > 60 ? '✓' : '•'}</span> Gas Tank applied 0.1 XLM Sponsor Fee
-                    </p>
-                    <p className="text-xs text-slate-500 flex items-center">
-                      <span className="w-4">{progress > 80 ? '✓' : '•'}</span> Submitting to Soroban Testnet RPC...
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Step 3: Success Confetti */}
-          {step === 3 && (
-            <div className="fade-in text-center">
-              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-emerald-600 text-2xl">✓</span>
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">Token Minted!</h3>
-              <p className="text-slate-600 text-sm mb-6">
-                You just executed a real transaction on the Stellar network. You didn't pay a cent, and you didn't even notice the wallet.
+              <p className="text-zinc-600 text-[10px] mt-4 leading-relaxed">
+                Clicking this generates a temporary cryptographic key in your browser, signs an intent, and executes a real Stellar transaction — all invisibly, in under 5 seconds.
               </p>
-              
-              <div className="bg-slate-50 rounded-xl p-4 border border-slate-200 text-left mb-6">
-                <div className="flex justify-between items-center mb-2">
-                   <span className="text-xs font-semibold text-slate-500">Transaction Receipt</span>
-                   <span className="text-xs text-emerald-600 font-medium">Confirmed On-Chain</span>
+            </div>
+          )}
+
+          {/* LOADING STAGES */}
+          {isLoading && (
+            <div className="fade-in">
+              <div className="text-center mb-8">
+                <div className="w-12 h-12 border-2 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-white font-bold text-sm">{STAGES[stage]?.label}</p>
+                <p className="text-zinc-500 text-xs mt-1">{STAGES[stage]?.detail}</p>
+              </div>
+
+              {/* Step tracker */}
+              <div className="space-y-3">
+                {Object.entries(STAGES).map(([key, { label }]) => {
+                  const stageOrder = ['generating', 'signing', 'relaying', 'confirming'];
+                  const currentIdx = stageOrder.indexOf(stage);
+                  const thisIdx = stageOrder.indexOf(key);
+                  const done = thisIdx < currentIdx;
+                  const active = thisIdx === currentIdx;
+                  return (
+                    <div key={key} className={`flex items-center gap-3 text-xs font-mono transition-colors ${done ? 'text-indigo-400' : active ? 'text-white' : 'text-zinc-700'}`}>
+                      <span className="w-4 text-center">
+                        {done ? '✓' : active ? '›' : '·'}
+                      </span>
+                      <span>{label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* SUCCESS */}
+          {stage === 'success' && (
+            <div className="fade-in text-center">
+              <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-5 shadow-[0_0_24px_rgba(16,185,129,0.2)]">
+                <span className="text-emerald-400 text-2xl">✓</span>
+              </div>
+              <h2 className="text-2xl font-extrabold text-white mb-2">Coffee Claimed!</h2>
+              <p className="text-zinc-400 text-xs mb-6">A real Stellar transaction was executed on your behalf. You paid nothing.</p>
+
+              {/* Receipt */}
+              <div className="bg-black/50 rounded-xl p-4 border border-zinc-800 text-left text-xs space-y-3 mb-6">
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-900">
+                  <span className="text-zinc-500 uppercase tracking-widest text-[10px] font-bold">Receipt</span>
+                  <span className="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-500/20">On-Chain ✓</span>
                 </div>
-                <p className="text-xs text-slate-600 mb-1"><strong>Sponsor:</strong> StellarBloom App Dev Pool</p>
-                <p className="text-xs text-slate-600 mb-3"><strong>Gas Paid:</strong> 0.00010 XLM</p>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Gas Paid By</span>
+                  <span className="text-indigo-400 font-bold">StellarBloom Relayer</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Your Wallet</span>
+                  <span className="text-zinc-300 font-mono">{userPubKey ? `${userPubKey.slice(0,6)}...${userPubKey.slice(-4)}` : '—'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Fee Charged</span>
+                  <span className="text-white font-bold">$0.00</span>
+                </div>
                 {txHash && (
-                  <a href={`https://stellar.expert/explorer/testnet/tx/${txHash}`} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 hover:text-indigo-500 font-medium underline block text-center mt-2 border-t border-slate-200 pt-3">
-                    View execution on Stellar Expert ↗
-                  </a>
+                  <div className="pt-2 border-t border-zinc-900">
+                    <a
+                      href={`https://stellar.expert/explorer/testnet/tx/${txHash}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-center gap-1 text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
+                    >
+                      View on Stellar Expert ↗
+                    </a>
+                  </div>
                 )}
               </div>
 
-              <button 
-                onClick={() => {
-                  setStep(1);
-                  setTxHash(null);
-                  bloom.logout();
-                }}
-                className="text-indigo-600 text-sm font-medium hover:text-indigo-500"
-              >
-                Reset Demo & Clear Session Key
+              <button onClick={handleReset} className="text-zinc-600 hover:text-zinc-400 text-xs font-bold uppercase tracking-widest transition-colors">
+                Try Again
               </button>
             </div>
           )}
 
+          {/* ERROR */}
+          {stage === 'error' && (
+            <div className="fade-in text-center">
+              <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center mx-auto mb-5">
+                <span className="text-red-400 text-2xl">✕</span>
+              </div>
+              <h2 className="text-lg font-bold text-white mb-2">Transaction Failed</h2>
+              <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-left mb-6">
+                <p className="text-red-400 text-xs font-mono break-words">{errorMsg}</p>
+              </div>
+              <p className="text-zinc-600 text-xs mb-6">Make sure the Relayer is running on localhost:3000</p>
+              <button onClick={handleReset} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 rounded-xl transition-all text-sm">
+                Try Again
+              </button>
+            </div>
+          )}
         </div>
+
+        {/* Bottom proof text */}
+        {stage === 'idle' && (
+          <p className="text-center text-zinc-700 text-[10px] mt-4 font-mono">
+            Powered by Soroban · Stellar Testnet · StellarBloom SDK v0.1
+          </p>
+        )}
       </div>
     </div>
   );
+}
+
+function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
