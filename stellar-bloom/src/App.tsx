@@ -7,6 +7,14 @@ const RELAYER_URL = import.meta.env.VITE_RELAYER_URL || 'http://localhost:3000';
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
 type CoffeeStage = 'idle' | 'generating' | 'signing' | 'relaying' | 'success' | 'error';
 
+interface MetricsData {
+  totalTransactions: number;
+  uniqueUsers: number;
+  xlmSponsored: string;
+  transactionsByDay: Record<string, number>;
+  recentTransactions: Array<{ hash: string; pubKey: string; action: string; timestamp: string }>;
+}
+
 function App() {
   const [activeTab, setActiveTab] = useState<'demo' | 'docs'>('demo');
 
@@ -23,6 +31,7 @@ function App() {
   // ── Relayer Health ──
   const [relayerOnline, setRelayerOnline] = useState<boolean | null>(null);
   const [relayerStats, setRelayerStats] = useState<{ totalTransactions: number; xlmSponsored: string; uptime: string } | null>(null);
+  const [metrics, setMetrics] = useState<MetricsData | null>(null);
 
   // Auto-restore wallet session from previous visit
   useEffect(() => {
@@ -45,6 +54,12 @@ function App() {
         setRelayerOnline(d.status === 'ok');
         setRelayerStats({ totalTransactions: d.totalTransactions ?? 0, xlmSponsored: d.xlmSponsored ?? '0.0000', uptime: d.uptime ?? 'N/A' });
       } catch { setRelayerOnline(false); }
+      // Also fetch full metrics
+      try {
+        const r2 = await fetch(`${RELAYER_URL}/api/metrics`);
+        const m = await r2.json();
+        setMetrics(m);
+      } catch { /* metrics optional */ }
     };
     poll();
     const id = setInterval(poll, 5000);
@@ -305,6 +320,78 @@ function App() {
                 </div>
               )}
             </div>
+
+            {/* ── Metrics Dashboard ── */}
+            {metrics && (
+              <div className="glass-panel metrics-panel">
+                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px', flexWrap:'wrap', gap:'12px'}}>
+                  <div>
+                    <h3 style={{marginBottom:'3px'}}>📊 Platform Metrics</h3>
+                    <p className="text-muted" style={{fontSize:'0.8rem'}}>Indexed from persistent transaction log · live data</p>
+                  </div>
+                  <a href={`${RELAYER_URL}/api/metrics`} target="_blank" rel="noreferrer" style={{fontSize:'0.75rem', color:'#7c3aed', textDecoration:'underline'}}>
+                    Raw JSON ↗
+                  </a>
+                </div>
+
+                {/* KPI row */}
+                <div className="metrics-kpi-row">
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value">{metrics.totalTransactions}</div>
+                    <div className="metrics-kpi-label">Total Transactions</div>
+                  </div>
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value">{metrics.uniqueUsers}</div>
+                    <div className="metrics-kpi-label">Unique Users</div>
+                  </div>
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value">{parseFloat(metrics.xlmSponsored).toFixed(4)}</div>
+                    <div className="metrics-kpi-label">XLM Sponsored</div>
+                  </div>
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value" style={{fontSize:'1.1rem'}}>
+                      {metrics.totalTransactions > 0 ? (parseFloat(metrics.xlmSponsored) / metrics.uniqueUsers).toFixed(5) : '0'}
+                    </div>
+                    <div className="metrics-kpi-label">Avg XLM / User</div>
+                  </div>
+                </div>
+
+                {/* Daily breakdown */}
+                {Object.keys(metrics.transactionsByDay).length > 0 && (
+                  <div style={{marginTop:'20px'}}>
+                    <p style={{fontSize:'0.78rem', color:'#6b7280', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'10px'}}>Activity by Day</p>
+                    <div className="metrics-day-grid">
+                      {Object.entries(metrics.transactionsByDay).sort().map(([day, count]) => (
+                        <div key={day} className="metrics-day-bar">
+                          <div className="metrics-bar-fill" style={{height: `${Math.min(100, (count / Math.max(...Object.values(metrics.transactionsByDay))) * 60 + 10)}px`}} />
+                          <div className="metrics-bar-count">{count}</div>
+                          <div className="metrics-bar-day">{day.slice(5)}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Recent txs */}
+                {metrics.recentTransactions.length > 0 && (
+                  <div style={{marginTop:'20px'}}>
+                    <p style={{fontSize:'0.78rem', color:'#6b7280', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'10px'}}>Recent Transactions</p>
+                    <div className="metrics-tx-table">
+                      {metrics.recentTransactions.slice(0, 5).map((tx, i) => (
+                        <div key={i} className="metrics-tx-row">
+                          <code style={{color:'#a78bfa', fontSize:'0.75rem'}}>{tx.pubKey?.slice(0,8)}...{tx.pubKey?.slice(-4)}</code>
+                          <span style={{color:'#6b7280', fontSize:'0.75rem'}}>{tx.action}</span>
+                          <a href={`https://stellar.expert/explorer/testnet/tx/${tx.hash}`} target="_blank" rel="noreferrer" style={{fontSize:'0.72rem', color:'#7c3aed', textDecoration:'underline'}}>
+                            {tx.hash?.slice(0,10)}... ↗
+                          </a>
+                          <span style={{color:'#374151', fontSize:'0.7rem'}}>{tx.timestamp?.slice(11,19)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Quick Start */}
             <div className="dashboard-grid">

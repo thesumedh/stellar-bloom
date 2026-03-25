@@ -659,3 +659,92 @@ button:disabled { opacity: 0.55; cursor: not-allowed; transform: none !important
   position: absolute; top: 0; left: 0; right: 0; height: 2px;
   background: linear-gradient(90deg, transparent, #7c3aed, transparent);
 }
+
+/* ── Metrics Dashboard ── */
+.metrics-panel { width: 100%; max-width: 900px; padding: 28px; }
+
+.metrics-kpi-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.metrics-kpi {
+  flex: 1;
+  min-width: 100px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: center;
+}
+.metrics-kpi-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--accent-light);
+  letter-spacing: -0.5px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.metrics-kpi-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 600;
+}
+
+/* Daily bar chart */
+.metrics-day-grid {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  height: 80px;
+  padding-bottom: 20px;
+  position: relative;
+}
+.metrics-day-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  position: relative;
+}
+.metrics-bar-fill {
+  width: 100%;
+  background: linear-gradient(to top, #7c3aed, #a78bfa);
+  border-radius: 4px 4px 0 0;
+  min-height: 8px;
+  transition: height 0.4s ease;
+}
+.metrics-bar-count {
+  font-size: 0.65rem;
+  color: var(--accent-light);
+  font-weight: 700;
+}
+.metrics-bar-day {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  position: absolute;
+  bottom: -18px;
+  white-space: nowrap;
+}
+
+/* Recent tx table */
+.metrics-tx-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.metrics-tx-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(0,0,0,0.15);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+}
+@media (max-width: 600px) { .metrics-tx-row { grid-template-columns: 1fr 1fr; } }

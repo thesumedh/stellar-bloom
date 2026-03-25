@@ -17,8 +17,8 @@ app.use(express.json());
 
 // --- Abuse Protection & Rate Limiting ---
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Limit each IP to 100 requests per 15 mins
+    windowMs: 15 * 60 * 1000,
+    max: process.env.NODE_ENV === 'test' ? 5000 : 100,
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: 'Too many requests from this IP, please try again after 15 minutes' }
@@ -42,10 +42,36 @@ const seenNonces = new Set(); // store used nonces (in prod, use Redis with TTL)
 const server = new Horizon.Server("https://horizon-testnet.stellar.org");
 const SPONSOR_SECRET = process.env.SPONSOR_SECRET;
 
+import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
+
+// --- Persistent Transaction Log ---
+const DATA_DIR = './data';
+const TX_LOG_FILE = `${DATA_DIR}/transactions.json`;
+
+if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+
+function loadTxLog() {
+    try {
+        return existsSync(TX_LOG_FILE) ? JSON.parse(readFileSync(TX_LOG_FILE, 'utf8')) : [];
+    } catch { return []; }
+}
+
+function appendTx(entry) {
+    const log = loadTxLog();
+    log.push(entry);
+    writeFileSync(TX_LOG_FILE, JSON.stringify(log, null, 2));
+}
+
 // --- Endpoints ---
 const startTime = Date.now();
-let totalTransactions = 0;
-let totalXlmSponsored = 0;
+
+// Restore totals from persisted log on startup
+const _log = loadTxLog();
+let totalTransactions = _log.length;
+let totalXlmSponsored = _log.reduce((sum, tx) => sum + (tx.xlmFee || 0), 0);
+
+console.log(`📊 Restored ${totalTransactions} transactions from persistent log`);
+
 
 // Health check — polled by the developer dashboard every 5s
 app.get('/health', (req, res) => {
@@ -221,21 +247,49 @@ app.post('/relay/intent', async (req, res) => {
         // 4. Submit to Network
         const response = await server.submitTransaction(tx);
 
-        // 5. Update Bookkeeping
+        // 5. Update Bookkeeping + Persistent Log
         userLimit.count += 1;
         userRateLimits.set(pubKey, userLimit);
+        totalTransactions += 1;
+        totalXlmSponsored += 0.000010; // 100 stroops in XLM
         if (apiKeysDb[apiKey]) {
             apiKeysDb[apiKey].transactions += 1;
             apiKeysDb[apiKey].gasSponsored += 100;
         }
+        appendTx({
+            hash: response.hash,
+            pubKey,
+            action: intentData.action || 'unknown',
+            xlmFee: 0.000010,
+            apiKey,
+            timestamp: new Date().toISOString(),
+        });
 
         console.log(`[Relayer Intent] ${pubKey} Action: ${intentData.action} Hash: ${response.hash}`);
-        res.json({ success: true, hash: response.hash });
+        res.json({ success: true, hash: response.hash, userPubKey: pubKey });
 
     } catch (error) {
         console.error("Intent relay failed:", error);
         res.status(500).json({ error: "Execution failed", details: error.message });
     }
+});
+
+// Metrics endpoint — indexed transaction data for dashboard & Black Belt requirement
+app.get('/api/metrics', (req, res) => {
+    const log = loadTxLog();
+    const uniqueUsers = new Set(log.map(tx => tx.pubKey)).size;
+    const byDay = {};
+    log.forEach(tx => {
+        const day = tx.timestamp?.slice(0, 10) || 'unknown';
+        byDay[day] = (byDay[day] || 0) + 1;
+    });
+    res.json({
+        totalTransactions: log.length,
+        uniqueUsers,
+        xlmSponsored: log.reduce((s, tx) => s + (tx.xlmFee || 0), 0).toFixed(7),
+        transactionsByDay: byDay,
+        recentTransactions: log.slice(-10).reverse(),
+    });
 });
 
 // 3. Developer Portal: Mock API Key Generation
