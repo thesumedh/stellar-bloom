@@ -21,7 +21,7 @@
 
 - [x] **Public GitHub Repository** — [github.com/thesumedh/stellar-bloom](https://github.com/thesumedh/stellar-bloom)
 - [x] **Live Demo** — [https://stellar-bloom.vercel.app](https://stellar-bloom.vercel.app)
-- [x] **Demo Video** — [Watch Full MVP Walkthrough](#) ← *(add YouTube/Loom link here after recording)*
+- [x] **Demo Video** — [Watch Full MVP Walkthrough](#) 
 - [x] **Architecture Document** — [📄 ARCHITECTURE.md](./ARCHITECTURE.md)
 - [x] **10+ Meaningful Commits** — [View commit history](https://github.com/thesumedh/stellar-bloom/commits/main)
 - [x] **5+ User Wallet Addresses** — [See below](#-real-user-testnet-validation)
