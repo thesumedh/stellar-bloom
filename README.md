@@ -25,8 +25,8 @@
 - [x] **Architecture Document** — [📄 ARCHITECTURE.md](./ARCHITECTURE.md)
 - [x] **10+ Meaningful Commits** — [View commit history](https://github.com/thesumedh/stellar-bloom/commits/main)
 - [x] **5+ User Wallet Addresses** — [See below](#-real-user-testnet-validation)
-- [x] **User Feedback Form** — [Excel Sheet](https://docs.google.com/spreadsheets/d/1x-nKPFXncRoAWsnBm-nD1jnAIvL4t0SDZy8TGKOTJ7M/edit?usp=sharing)
-- [x] **Feedback Sheet** — https://docs.google.com/spreadsheets/d/1x-nKPFXncRoAWsnBm-nD1jnAIvL4t0SDZy8TGKOTJ7M/edit?usp=sharing
+- [x] **User Feedback Form** — https://forms.gle/XvnXMovWR3uSaQTH9
+- [x] **Feedback Sheet** — [Excel Sheet](https://docs.google.com/spreadsheets/d/1x-nKPFXncRoAWsnBm-nD1jnAIvL4t0SDZy8TGKOTJ7M/edit?usp=sharing)
 - [x] **Deployed Relayer** — [https://stellar-bloom.onrender.com/health](https://stellar-bloom.onrender.com/health)
 
 ---
