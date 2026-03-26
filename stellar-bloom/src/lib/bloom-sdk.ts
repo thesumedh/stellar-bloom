@@ -7,7 +7,8 @@ export interface BloomResult {
   error?: string;
 }
 
-const RELAYER_URL = 'http://localhost:3000/relay/intent';
+const BASE_URL = (import.meta.env.VITE_RELAYER_URL || 'http://localhost:3000').replace(/\/$/, '');
+const RELAYER_URL = `${BASE_URL}/relay/intent`;
 const API_KEY = 'sb_test_5kq9v2x8m4j1c0p3';
 
 /**

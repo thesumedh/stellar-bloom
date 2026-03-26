@@ -14,7 +14,7 @@ export default function DeveloperPortal({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     const fetchStats = () => {
-      fetch('http://localhost:3000/api/stats/sb_test_5kq9v2x8m4j1c0p3')
+      fetch(`${(import.meta.env.VITE_RELAYER_URL || 'http://localhost:3000').replace(/\/$/, '')}/api/stats/sb_test_5kq9v2x8m4j1c0p3`)
         .then(res => res.json())
         .then(data => {
           if (data.success) {
