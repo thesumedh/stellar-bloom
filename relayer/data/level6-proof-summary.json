@@ -1,0 +1,9 @@
+{
+  "generatedAt": "2026-03-29T13:52:14.865Z",
+  "source": "./data/transactions.json",
+  "totalTransactions": 46,
+  "uniqueWallets": 38,
+  "exportedWallets": 30,
+  "repeatWallets": 4,
+  "activeDays": 4
+}

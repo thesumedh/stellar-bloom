@@ -286,5 +286,85 @@
     "xlmFee": 0.00001,
     "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
     "timestamp": "2026-03-25T17:56:42.609Z"
+  },
+  {
+    "hash": "ea2841b81c9e4f39f9c7fc46c773370717529a9c931a0e76f362fd82f995f691",
+    "pubKey": "GAKUDZDUNFDUENEHM6K4DICD2IVCBNC6S56BZ7DSJB4DGII2EIXN4DLV",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-25T18:21:30.856Z"
+  },
+  {
+    "hash": "905c3bdc5819619c2c638ee09c25c968befba44eb679692392c1fe644d80cbd6",
+    "pubKey": "GDPWCRMVUO7Z4BR5KIJZF5LBOVTOPQJIDYJ56PKHF3E3ZO2Y3QXMQ2HW",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-25T20:26:39.713Z"
+  },
+  {
+    "hash": "221e00e7e7dc1e9ec57bbf8ac49586d836dfd5c5eac4e57d3f4ba896fe48cccd",
+    "pubKey": "GDQSF7TMQLVEZZ65AENEOFQHAWXFXGSEM4OL6W7ESSK4B7ZQB3DXLMRJ",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-25T20:27:45.077Z"
+  },
+  {
+    "hash": "87b6008e93a0e25133cc4bf83b61836ce9b45ba3026e99a10112b26d19c6a0c3",
+    "pubKey": "GCYFQGGAQ6XBEF4VGS66FW3U4FKYAXO4NWQAKHF3EZCNY6I4CWGEGSVV",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-26T08:35:16.118Z"
+  },
+  {
+    "hash": "cbf5cccb30aec2d7555897a910c27cca502114a2cb9e9ce06e0b817dfbcf7393",
+    "pubKey": "GDRYNZAL3Z7MHVQAGKRHYCP6KG24JDPPBWR5L6TZFWHY3XWVPDYBWVLC",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-26T08:35:50.645Z"
+  },
+  {
+    "hash": "b9d24f1f4f0426df19175a9456a40244e5dc9c221ff366951748c85b2756c4a3",
+    "pubKey": "GCSKQQTR4AOJHKODKHBEWUJJFGGZGZMKNQCSYQSOZPGRH5XGHSKDAFU6",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-26T08:43:01.117Z"
+  },
+  {
+    "hash": "6d3a43e1d250949acb5a3163ae0d8fb05ed6097779be139b7d7797f93b4a5dd9",
+    "pubKey": "GCDKCZNTENGOCZMYCZR7XGYFGDXS2LZZPV6INZ4KX2AQ5NIBIO4QQ3JK",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-27T15:55:04.951Z"
+  },
+  {
+    "hash": "015dc7c696cd5e27cbe87e365f7812c0abd36c5301797869d25a2b22afebd5dd",
+    "pubKey": "GACAF4XZZKB5JX5RH26AHGIG74NOGSF4CF4CH5WBAKETH5BHHOFFAP3Q",
+    "action": "unlock_item",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-27T15:55:30.550Z"
+  },
+  {
+    "hash": "613e29659c85c43838e7a0070d8bf0f8f81efd72f11ab0e81cfe4d8bf19f5ad9",
+    "pubKey": "GCDIXLBSJMNHBZEKW5ET6IZHYSMX44ZOQVZF5NEE6MZLD3DLQIXVQTZM",
+    "action": "claim_coffee",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-27T16:05:06.420Z"
+  },
+  {
+    "hash": "55c75c84fcbc78641b2b765554c77effa49030f0ed25f68f55711caf893b62a0",
+    "pubKey": "GAFCGGNLXN4GZHTLUDEMMO7X3WFPL4GVOPZP7U6TJBJQX3L77AMQMC62",
+    "action": "claim_ticket",
+    "xlmFee": 0.00001,
+    "apiKey": "sb_test_5kq9v2x8m4j1c0p3",
+    "timestamp": "2026-03-29T12:24:53.625Z"
   }
 ]

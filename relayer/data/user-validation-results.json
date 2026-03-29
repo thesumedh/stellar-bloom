@@ -1,170 +1,528 @@
 [
   {
     "index": 1,
-    "wallet": "GAOR2E5G6URWAQATYH43NQNI4GVFYJM6BAOHEHKV6VVTPCJFEDBO32WZ",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:13:24.151Z"
+    "wallet": "GCKYUDH2UTV35NNTUGG5HZ46LRDQABXHBBW3BN526D5VH7XFK5JEGF6L",
+    "txCount": 5,
+    "hash": "5b2309947c32d73d0f7ef42f7233bb62bc143822f8be412f226a406e2583310e",
+    "allHashes": [
+      "5b2309947c32d73d0f7ef42f7233bb62bc143822f8be412f226a406e2583310e",
+      "dfbde816a07229953b97bff2861359fdc43beded0c80c9229e6fc5032f67616f",
+      "1ae2d984757b3b0c7bc16834e20d2f8b7dc36322d134df3ce0cb9b87c62c27aa",
+      "d6d9297342cf6a3c738126d7e1fa1aea56dc13923757954d4c16ca0d8c95fa3a",
+      "b94765c45579873cefbe1b58d566476fbdd00be0b8e7c60d3c38f593f050344a"
+    ],
+    "actions": [
+      "claim_coffee",
+      "claim_coffee",
+      "claim_coffee",
+      "claim_coffee",
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:54:41.679Z",
+    "lastSeenAt": "2026-03-25T17:55:12.094Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/5b2309947c32d73d0f7ef42f7233bb62bc143822f8be412f226a406e2583310e",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 2,
-    "wallet": "GCF2KDC4IMRGLDYWL2UABKIWSORO6V77E7VMYHNEKA23DTZP4ML43F4K",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:13:39.106Z"
+    "wallet": "GD4J4B453BCRICFTSFK4AMLM454PLMRUSOTB5JZ5GWC4IJONX5PU7Y62",
+    "txCount": 3,
+    "hash": "7c33ab4e601e558b5ea50c1cacb68a5280e8e2c09950cc5128d62f92b0a6b401",
+    "allHashes": [
+      "7c33ab4e601e558b5ea50c1cacb68a5280e8e2c09950cc5128d62f92b0a6b401",
+      "5671ff9bf3120510af8161da411e3dc6773909c6812c49c8fe41b2c406747e03",
+      "5c08d5397f0f429cf7c37fbe152f7ba9bf1ac70f6a1b8b9735b692fcb4caa2db"
+    ],
+    "actions": [
+      "claim_coffee",
+      "claim_coffee",
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:53:27.139Z",
+    "lastSeenAt": "2026-03-25T17:53:37.121Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/7c33ab4e601e558b5ea50c1cacb68a5280e8e2c09950cc5128d62f92b0a6b401",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 3,
-    "wallet": "GDUQACA7XOGUTJ7RE2W5P2L5R67APQ4FD4QGY5HSOQ7KJHW6XHWBC4SE",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:13:59.128Z"
+    "wallet": "GBIKQMEDPPUSCXSVSQSE4CF2DXMDX6DEXA2JUNNFYGDAMW4VUB4FP6Y3",
+    "txCount": 2,
+    "hash": "ec37a7719b4857a12822c7f97442290e545c97f539ba16585ca0c835ea041b10",
+    "allHashes": [
+      "ec37a7719b4857a12822c7f97442290e545c97f539ba16585ca0c835ea041b10",
+      "4de52a3d7b455b12b6fefb5ea0ed7067ad5836f0fc4de59f59528b69d46bb2e4"
+    ],
+    "actions": [
+      "claim_coffee",
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:53:47.061Z",
+    "lastSeenAt": "2026-03-25T17:53:52.069Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ec37a7719b4857a12822c7f97442290e545c97f539ba16585ca0c835ea041b10",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 4,
-    "wallet": "GBRP25G7NERFZHU4VX576WVXYLE7OII24JKXRS6ILIYIHKGHUJRWNQGV",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:14:18.699Z"
+    "wallet": "GBGQV475SQSGULTJTX7VY6HCY64PXPDGNVMZYTSG3K56RRYOJDBACOGR",
+    "txCount": 2,
+    "hash": "831d2af18c5a2b340076780a148263f71a6ab0be1f54eb551661318969d9c90e",
+    "allHashes": [
+      "831d2af18c5a2b340076780a148263f71a6ab0be1f54eb551661318969d9c90e",
+      "0a604c50e4a3fc8717ece7a7cc84d994873a214186deff3245b21f82a3a920c1"
+    ],
+    "actions": [
+      "claim_coffee",
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:55:32.644Z",
+    "lastSeenAt": "2026-03-25T17:55:37.075Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/831d2af18c5a2b340076780a148263f71a6ab0be1f54eb551661318969d9c90e",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 5,
-    "wallet": "GCEIEK2OTKG3ULVUUZ6HGHZ7PQCRCSDWXFKA7XFETLATYQX6EJ2PR7XN",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:14:33.750Z"
+    "wallet": "GAGRMCFYSC6NI7AZI42LELS4STJCFTPG7WEAA4SVSNGT6Z3NH3EOX4UN",
+    "txCount": 1,
+    "hash": "2b2ed737ffa76b91eb40c3e9e68a858e118ccde9b0fe0a3b8362f64d2f839919",
+    "allHashes": [
+      "2b2ed737ffa76b91eb40c3e9e68a858e118ccde9b0fe0a3b8362f64d2f839919"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:48:46.608Z",
+    "lastSeenAt": "2026-03-25T17:48:46.608Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/2b2ed737ffa76b91eb40c3e9e68a858e118ccde9b0fe0a3b8362f64d2f839919",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 6,
-    "wallet": "GCOETPNFO325HDYCCGO26WQPSHVSAIK7HADMG6NPXHIF7I4GOUVURPQM",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:14:49.114Z"
+    "wallet": "GAFYZMK75GAKFOVVU4YBNUWQRDV6OKDI7I6ZSSOBHYUDRXOYBURQJHDC",
+    "txCount": 1,
+    "hash": "844a5bb2d9093ce74ac060f624f16dc9d52200b62eba1f1fffee865e24817f78",
+    "allHashes": [
+      "844a5bb2d9093ce74ac060f624f16dc9d52200b62eba1f1fffee865e24817f78"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:49:07.117Z",
+    "lastSeenAt": "2026-03-25T17:49:07.117Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/844a5bb2d9093ce74ac060f624f16dc9d52200b62eba1f1fffee865e24817f78",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 7,
-    "wallet": "GBVU4MJFWYKGKJVOA2VFD4WDV7N6WBQEKAC3KW4PLHUYAXBANB5WCJCM",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:15:09.126Z"
+    "wallet": "GDSWYJVKOPI5OOFYGZQTG3KSFIF73U5DVKMQUXKSHJFWDK4ZLEVFDY2H",
+    "txCount": 1,
+    "hash": "2946ee58e80e81c3677f0d94ef0e7f19ed18a9244df96cddcc36d62efe35cf89",
+    "allHashes": [
+      "2946ee58e80e81c3677f0d94ef0e7f19ed18a9244df96cddcc36d62efe35cf89"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:49:27.074Z",
+    "lastSeenAt": "2026-03-25T17:49:27.074Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/2946ee58e80e81c3677f0d94ef0e7f19ed18a9244df96cddcc36d62efe35cf89",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 8,
-    "wallet": "GCYALUMBKDPJMYF3XJ7ZKSCLCU4CUM4MJ7VHJESCZBSDVIRAC2H4MGS5",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:15:29.109Z"
+    "wallet": "GCVDOL6YKPW7LNRQWU3XCTSWUZINRUQAM42FDAXGDTI6OTTG4KZKSSRP",
+    "txCount": 1,
+    "hash": "ebcf067304b9002dbb2fc07c9c54456a359905bac077f16714347b9aabee0ec9",
+    "allHashes": [
+      "ebcf067304b9002dbb2fc07c9c54456a359905bac077f16714347b9aabee0ec9"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:49:47.151Z",
+    "lastSeenAt": "2026-03-25T17:49:47.151Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ebcf067304b9002dbb2fc07c9c54456a359905bac077f16714347b9aabee0ec9",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 9,
-    "wallet": "GAZWS6EKWINWQIW5J7FKTEJAFUQVIA2QGYXABCI4P2KD6TVC2CBIIXYW",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:15:48.796Z"
+    "wallet": "GD4GLUDTO7QBIYWQBVJV6MB4RCILQ4XFNJ2XSBXCTMV4SPY4YG473KYF",
+    "txCount": 1,
+    "hash": "e5cf71ce157c0df471252e907683bc399b22d33b3394fefcecd9f32e14fe3474",
+    "allHashes": [
+      "e5cf71ce157c0df471252e907683bc399b22d33b3394fefcecd9f32e14fe3474"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:50:07.232Z",
+    "lastSeenAt": "2026-03-25T17:50:07.232Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/e5cf71ce157c0df471252e907683bc399b22d33b3394fefcecd9f32e14fe3474",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 10,
-    "wallet": "GBWMAY2O2C4CPSY5VROLKYLY3ET5IFWSQLDIHA5P6SX635DEJTFD73BS",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:16:09.125Z"
+    "wallet": "GDIULGXY2QWYZBALJNX2V3E6PV35OPEQNAZMT6KY2KWQWLHYU4IR235M",
+    "txCount": 1,
+    "hash": "4f84b7694f5145baaf32c60351d4f00e72016b0ae2592a1b1eebb86ce6ee0bf5",
+    "allHashes": [
+      "4f84b7694f5145baaf32c60351d4f00e72016b0ae2592a1b1eebb86ce6ee0bf5"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:50:27.101Z",
+    "lastSeenAt": "2026-03-25T17:50:27.101Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/4f84b7694f5145baaf32c60351d4f00e72016b0ae2592a1b1eebb86ce6ee0bf5",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 11,
-    "wallet": "GDCZ5GPTGK5YDGQEAM35FTDJ6B7SBJ4CQ2GOC2ZGON6XKWS26GUYAYQF",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:16:22.875Z"
+    "wallet": "GCFOBNEPOEJICH5KUOMCFNAZGNBDG2Z2EGBNAA6EJQWHWYI6GDJOEQ4S",
+    "txCount": 1,
+    "hash": "47132cf4af3d0a6fb246f5d86b1ee239c0f5d6af04359e5ff3d79f6868b8d429",
+    "allHashes": [
+      "47132cf4af3d0a6fb246f5d86b1ee239c0f5d6af04359e5ff3d79f6868b8d429"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:50:47.140Z",
+    "lastSeenAt": "2026-03-25T17:50:47.140Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/47132cf4af3d0a6fb246f5d86b1ee239c0f5d6af04359e5ff3d79f6868b8d429",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 12,
-    "wallet": "GCSRVRONVNH5NYBNJBEIAUSY3A44KVKABSUEP52IDK3JOX56LJWJNO73",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:16:32.280Z"
+    "wallet": "GC7LMLG7O4SQRWOYHNRXYHETNUDG4GX3GPVIDGPBMR325OLP6GAXIEM4",
+    "txCount": 1,
+    "hash": "2bf9ade1b628bc6c1bc1a33e90e8680e1f7e6c9b048d1b924773a44b5241f194",
+    "allHashes": [
+      "2bf9ade1b628bc6c1bc1a33e90e8680e1f7e6c9b048d1b924773a44b5241f194"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:51:02.106Z",
+    "lastSeenAt": "2026-03-25T17:51:02.106Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/2bf9ade1b628bc6c1bc1a33e90e8680e1f7e6c9b048d1b924773a44b5241f194",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 13,
-    "wallet": "GAMSQYB2U4C2PKUB2PXZCEPCHIYTYEEMPTVGAAHJT5A5LAJXPNYNZ7KY",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:16:44.555Z"
+    "wallet": "GCF3JKJXTH7HGNHGKYFNG3HCKCWR472TJSSBHREMSTZOLBBTQRALF4TX",
+    "txCount": 1,
+    "hash": "98f345625f8f121a376b939e6951fabbf4f64b9c2834dad52c7e339d3feff3a8",
+    "allHashes": [
+      "98f345625f8f121a376b939e6951fabbf4f64b9c2834dad52c7e339d3feff3a8"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:51:21.609Z",
+    "lastSeenAt": "2026-03-25T17:51:21.609Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/98f345625f8f121a376b939e6951fabbf4f64b9c2834dad52c7e339d3feff3a8",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 14,
-    "wallet": "GBUE2KT7QE234TCCEVI24FJT4KUVHMV7OXBKMF3YLHNTI2JZYXGRFPJM",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:16:58.099Z"
+    "wallet": "GDTK545LLULLRYRCZF56GVXYQCTMNXFJH6WD2XX4FQOJIYTMINOG7LNV",
+    "txCount": 1,
+    "hash": "f8e411cd0c2231734bf07cd7d4dbccc214fa5fd4ad646c9b132d09baad9559d9",
+    "allHashes": [
+      "f8e411cd0c2231734bf07cd7d4dbccc214fa5fd4ad646c9b132d09baad9559d9"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:51:41.631Z",
+    "lastSeenAt": "2026-03-25T17:51:41.631Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/f8e411cd0c2231734bf07cd7d4dbccc214fa5fd4ad646c9b132d09baad9559d9",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 15,
-    "wallet": "GAJJLXGFTGMPWVM7KRORAGI6Y23MQ2QT4FKX6XTUHLNBH2NUAG4LEQFL",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:17:07.032Z"
+    "wallet": "GAMWM6WTUZYC4KQ362O6NYOV422YPRAC43TBUWIOQ6SLOBW5ETQN3LRK",
+    "txCount": 1,
+    "hash": "9ec5db58672e814eac9cb2349cca11f647ae6b37ddfac03672970787a534d543",
+    "allHashes": [
+      "9ec5db58672e814eac9cb2349cca11f647ae6b37ddfac03672970787a534d543"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:51:57.110Z",
+    "lastSeenAt": "2026-03-25T17:51:57.110Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/9ec5db58672e814eac9cb2349cca11f647ae6b37ddfac03672970787a534d543",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 16,
-    "wallet": "GDWCV65VNG6VUFT7Z3R235I35DUAYS653I3KAT4Y7I5FMZEWWUEKEFZW",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:17:18.543Z"
+    "wallet": "GDOARCXWEAHPKS4P3WY2W2PZE6YLXYBXX7MWV7QVT2FCDC6PRDHNKJUD",
+    "txCount": 1,
+    "hash": "466b74e5b0db7ceb7b2708a76f9310ffc1893e9855343f0817cdad93c0c2fe99",
+    "allHashes": [
+      "466b74e5b0db7ceb7b2708a76f9310ffc1893e9855343f0817cdad93c0c2fe99"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:52:16.654Z",
+    "lastSeenAt": "2026-03-25T17:52:16.654Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/466b74e5b0db7ceb7b2708a76f9310ffc1893e9855343f0817cdad93c0c2fe99",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 17,
-    "wallet": "GAM4Z3RNXOLIUARCPZCOSV4KIZ52DOYJPKNA5RD47WWEFDRMCMNDSEFQ",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:17:27.288Z"
+    "wallet": "GC3556RRT63FCDULEDZCMUL5YE2MHH5OH4GBLG6P5TPRWI2L4D4TLQJN",
+    "txCount": 1,
+    "hash": "ebccc91a4102f6f35de782c26b44b34ef96441efe81029041ba0f0ce8ed154e4",
+    "allHashes": [
+      "ebccc91a4102f6f35de782c26b44b34ef96441efe81029041ba0f0ce8ed154e4"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:52:27.100Z",
+    "lastSeenAt": "2026-03-25T17:52:27.100Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ebccc91a4102f6f35de782c26b44b34ef96441efe81029041ba0f0ce8ed154e4",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 18,
-    "wallet": "GA63S5ESAGAW3HAIVR2VWLBQYRFKFVCHWRCX3FB7TMMUV7CVBWXQ7B6M",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:17:37.079Z"
+    "wallet": "GA2LLTRBJF5UNO6KVOBYIQGC6SW6TYWQZV32HVZ67L73IKCIYQZITNNI",
+    "txCount": 1,
+    "hash": "ed473895082c0647cf8d439e669a532dd6b1a32239b7b9449d8fb213cfbdb23b",
+    "allHashes": [
+      "ed473895082c0647cf8d439e669a532dd6b1a32239b7b9449d8fb213cfbdb23b"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:52:32.115Z",
+    "lastSeenAt": "2026-03-25T17:52:32.115Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ed473895082c0647cf8d439e669a532dd6b1a32239b7b9449d8fb213cfbdb23b",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 19,
-    "wallet": "GBMSCQF7XOHDEJCTODOEB5WHISLFPKSNOU4H4EP54EWQRXRRW2UH2EDJ",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:17:49.275Z"
+    "wallet": "GALGC3Z7BBPIIDGWHL3JOSFB3KBCJGIPXFZW33T7QTE47JHB3WX5HWVH",
+    "txCount": 1,
+    "hash": "911d346707ca4cb6db3fe13e3d29fc7468e56f6783b076380a4f9e74eacaac4c",
+    "allHashes": [
+      "911d346707ca4cb6db3fe13e3d29fc7468e56f6783b076380a4f9e74eacaac4c"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:52:52.079Z",
+    "lastSeenAt": "2026-03-25T17:52:52.079Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/911d346707ca4cb6db3fe13e3d29fc7468e56f6783b076380a4f9e74eacaac4c",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 20,
-    "wallet": "GC7NO23RRMGRW5XLFNRWHO7GKRJ5K2CZQY24KQRTHKALTNVW5UYJS5U5",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:18:03.023Z"
+    "wallet": "GCA4F6ASOQO4IL53P7EHVCMWKOTRX3SGT2GVVGTHHVHBKDZOSQUIIOOB",
+    "txCount": 1,
+    "hash": "50c6692f13c5b92daaa18237f693fc2c08953ea97186af7a964fd0ca32ce85d4",
+    "allHashes": [
+      "50c6692f13c5b92daaa18237f693fc2c08953ea97186af7a964fd0ca32ce85d4"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:53:12.068Z",
+    "lastSeenAt": "2026-03-25T17:53:12.068Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/50c6692f13c5b92daaa18237f693fc2c08953ea97186af7a964fd0ca32ce85d4",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   },
   {
     "index": 21,
-    "wallet": "GDEHCUPX7CJCAUPZ7HDSMK4P2XBGVNHYGTOFBAA57H66NZNF4XPVBOHD",
-    "hash": null,
-    "allHashes": [],
-    "txCount": 0,
-    "timestamp": "2026-03-25T18:18:12.408Z"
+    "wallet": "GAMWCP3KLSPCVFA63SXXQU6JMRWW7GQV4TJGCTNDZMKZ77445VHMQVUJ",
+    "txCount": 1,
+    "hash": "c340a32331b89b999f4bde282f18006624f8c0fd7e9cab083e343706b6141f69",
+    "allHashes": [
+      "c340a32331b89b999f4bde282f18006624f8c0fd7e9cab083e343706b6141f69"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:54:06.607Z",
+    "lastSeenAt": "2026-03-25T17:54:06.607Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/c340a32331b89b999f4bde282f18006624f8c0fd7e9cab083e343706b6141f69",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 22,
+    "wallet": "GDKGTR2B2TOBJDYCBFS2TNZO2YEDBNXNTMP3KQMJ7J5O4AI7XJXS7CJU",
+    "txCount": 1,
+    "hash": "b09dce81f96146e2006ca3613dcff9e3ae12edbdc3f19497d3cf4e597858fb39",
+    "allHashes": [
+      "b09dce81f96146e2006ca3613dcff9e3ae12edbdc3f19497d3cf4e597858fb39"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:54:21.601Z",
+    "lastSeenAt": "2026-03-25T17:54:21.601Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/b09dce81f96146e2006ca3613dcff9e3ae12edbdc3f19497d3cf4e597858fb39",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 23,
+    "wallet": "GCMKZMLSYBVZT7XQYRISFMF5AN4VI3XFSPNBRGOTLNNHE47AGAGPVEAO",
+    "txCount": 1,
+    "hash": "8170e97e2e464585115b1c79ea409f6204cfea6a6f549dc371ae1ba278f185e7",
+    "allHashes": [
+      "8170e97e2e464585115b1c79ea409f6204cfea6a6f549dc371ae1ba278f185e7"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:54:36.659Z",
+    "lastSeenAt": "2026-03-25T17:54:36.659Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/8170e97e2e464585115b1c79ea409f6204cfea6a6f549dc371ae1ba278f185e7",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 24,
+    "wallet": "GAYU66UUT6KMRXNR5PNZTGIVRILQ3HGN5PZA6HUBHG2ZOP64NL574UD6",
+    "txCount": 1,
+    "hash": "316079ba6b625ef7d494287c73bd36a0be5aa839dd1d884bc107bd94f1f3f932",
+    "allHashes": [
+      "316079ba6b625ef7d494287c73bd36a0be5aa839dd1d884bc107bd94f1f3f932"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:55:22.090Z",
+    "lastSeenAt": "2026-03-25T17:55:22.090Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/316079ba6b625ef7d494287c73bd36a0be5aa839dd1d884bc107bd94f1f3f932",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 25,
+    "wallet": "GD5Q2RFWJDV6RYORBNJ4FB27NYGPY5INUWSVDN6LT4V4IHQ6EAIPLY6S",
+    "txCount": 1,
+    "hash": "4cdcb4641ea0da6b75ab6fc199790cabb84c70454da31ad5bd112fcdc51de496",
+    "allHashes": [
+      "4cdcb4641ea0da6b75ab6fc199790cabb84c70454da31ad5bd112fcdc51de496"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:55:42.694Z",
+    "lastSeenAt": "2026-03-25T17:55:42.694Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/4cdcb4641ea0da6b75ab6fc199790cabb84c70454da31ad5bd112fcdc51de496",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 26,
+    "wallet": "GDJDGT3DZMU6E5S7UPQQR4Q5OIWUNPR2QNDR7ZLKFHAWOMR5I6FCYLIE",
+    "txCount": 1,
+    "hash": "4be1d39e10d842983169f1a7e2491f765cc7e7b5b18028c25c9fa03ba64e81be",
+    "allHashes": [
+      "4be1d39e10d842983169f1a7e2491f765cc7e7b5b18028c25c9fa03ba64e81be"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:56:02.750Z",
+    "lastSeenAt": "2026-03-25T17:56:02.750Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/4be1d39e10d842983169f1a7e2491f765cc7e7b5b18028c25c9fa03ba64e81be",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 27,
+    "wallet": "GBPSIJ6J5UAOEVT3ILDHHHMOEDG3MBAQTRMEI3ZMHISZGQ5R74PET7TC",
+    "txCount": 1,
+    "hash": "47c8bd0b04adaaf32dd6d2fb0247f75c1e0e29da2665647990e5cc3706352b28",
+    "allHashes": [
+      "47c8bd0b04adaaf32dd6d2fb0247f75c1e0e29da2665647990e5cc3706352b28"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:56:22.059Z",
+    "lastSeenAt": "2026-03-25T17:56:22.059Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/47c8bd0b04adaaf32dd6d2fb0247f75c1e0e29da2665647990e5cc3706352b28",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 28,
+    "wallet": "GC3TX2ZJMBK3FCR7OAQLOJOINJJZK465LU24CIQ6LWRWLEJCS4UU326X",
+    "txCount": 1,
+    "hash": "019ac27943b0f88213237154e709317919b0fc6fe0f561e8fbb59b768b1603c3",
+    "allHashes": [
+      "019ac27943b0f88213237154e709317919b0fc6fe0f561e8fbb59b768b1603c3"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T17:56:42.609Z",
+    "lastSeenAt": "2026-03-25T17:56:42.609Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/019ac27943b0f88213237154e709317919b0fc6fe0f561e8fbb59b768b1603c3",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 29,
+    "wallet": "GAKUDZDUNFDUENEHM6K4DICD2IVCBNC6S56BZ7DSJB4DGII2EIXN4DLV",
+    "txCount": 1,
+    "hash": "ea2841b81c9e4f39f9c7fc46c773370717529a9c931a0e76f362fd82f995f691",
+    "allHashes": [
+      "ea2841b81c9e4f39f9c7fc46c773370717529a9c931a0e76f362fd82f995f691"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T18:21:30.856Z",
+    "lastSeenAt": "2026-03-25T18:21:30.856Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ea2841b81c9e4f39f9c7fc46c773370717529a9c931a0e76f362fd82f995f691",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
+  },
+  {
+    "index": 30,
+    "wallet": "GDPWCRMVUO7Z4BR5KIJZF5LBOVTOPQJIDYJ56PKHF3E3ZO2Y3QXMQ2HW",
+    "txCount": 1,
+    "hash": "905c3bdc5819619c2c638ee09c25c968befba44eb679692392c1fe644d80cbd6",
+    "allHashes": [
+      "905c3bdc5819619c2c638ee09c25c968befba44eb679692392c1fe644d80cbd6"
+    ],
+    "actions": [
+      "claim_coffee"
+    ],
+    "timestamp": "2026-03-25T20:26:39.713Z",
+    "lastSeenAt": "2026-03-25T20:26:39.713Z",
+    "explorerUrl": "https://stellar.expert/explorer/testnet/tx/905c3bdc5819619c2c638ee09c25c968befba44eb679692392c1fe644d80cbd6",
+    "activeDays": 1,
+    "note": "Derived from the persistent relayer transaction log."
   }
 ]

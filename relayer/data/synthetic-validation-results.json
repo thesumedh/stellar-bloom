@@ -1,0 +1,922 @@
+[
+  {
+    "index": 1,
+    "wallet": "GB5M4NXWWZ6XJ4TUNC4A32H4SSS4ZDI3BNYGBITQOGEGSYHK4EVG5YOP",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "31802239bcee9277637d06c1be47be15e8354ad98a9418b15c704d2e9efb9055",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/31802239bcee9277637d06c1be47be15e8354ad98a9418b15c704d2e9efb9055",
+    "actions": [
+      "claim_ticket",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "31802239bcee9277637d06c1be47be15e8354ad98a9418b15c704d2e9efb9055",
+      "facc7af0ea876eb6c63e96ecb0383ea55d0ff16d318b776b07e6e12e508ba6af"
+    ],
+    "journey": [
+      {
+        "hash": "31802239bcee9277637d06c1be47be15e8354ad98a9418b15c704d2e9efb9055",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/31802239bcee9277637d06c1be47be15e8354ad98a9418b15c704d2e9efb9055",
+        "timestamp": "2026-03-29T13:06:51.076Z"
+      },
+      {
+        "hash": "facc7af0ea876eb6c63e96ecb0383ea55d0ff16d318b776b07e6e12e508ba6af",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/facc7af0ea876eb6c63e96ecb0383ea55d0ff16d318b776b07e6e12e508ba6af",
+        "timestamp": "2026-03-29T13:06:55.549Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:06:55.549Z"
+  },
+  {
+    "index": 2,
+    "wallet": "GCBE4IL3JW4COVCA2VPGLNFQ47EQ2YCFPWD3SSZEOUPDHLVH5GTCF32X",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "00c892977df18a205a81e82cc3e5af6d6aab02c97e571c7901bca759a919bbe7",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/00c892977df18a205a81e82cc3e5af6d6aab02c97e571c7901bca759a919bbe7",
+    "actions": [
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "00c892977df18a205a81e82cc3e5af6d6aab02c97e571c7901bca759a919bbe7",
+      "6ffbfa2ee41d924ca335b90b4ab581644a93246a6474d218c0b20550361f0de0"
+    ],
+    "journey": [
+      {
+        "hash": "00c892977df18a205a81e82cc3e5af6d6aab02c97e571c7901bca759a919bbe7",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/00c892977df18a205a81e82cc3e5af6d6aab02c97e571c7901bca759a919bbe7",
+        "timestamp": "2026-03-29T13:07:01.060Z"
+      },
+      {
+        "hash": "6ffbfa2ee41d924ca335b90b4ab581644a93246a6474d218c0b20550361f0de0",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/6ffbfa2ee41d924ca335b90b4ab581644a93246a6474d218c0b20550361f0de0",
+        "timestamp": "2026-03-29T13:07:05.547Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:07:05.547Z"
+  },
+  {
+    "index": 3,
+    "wallet": "GCAR62SEQUQ6ASOQ3BNJQFKFBOGVSMYFOEYP3OVOE2GFWDUMXK26GTZK",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "ccada60c7e76a1a0a9a57a65759248b06455d6dc6c1aaa689a842f6768390e2f",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/ccada60c7e76a1a0a9a57a65759248b06455d6dc6c1aaa689a842f6768390e2f",
+    "actions": [
+      "claim_coffee",
+      "claim_ticket",
+      "unlock_item"
+    ],
+    "allHashes": [
+      "ccada60c7e76a1a0a9a57a65759248b06455d6dc6c1aaa689a842f6768390e2f",
+      "e04b6190b10be6780cf23a69d127efbd531538bb12a619f7e51f4dbd4601a43f",
+      "519ddee250f587174bef954cec4f516903205c21ef83310ec0ba78bd343f5f7b"
+    ],
+    "journey": [
+      {
+        "hash": "ccada60c7e76a1a0a9a57a65759248b06455d6dc6c1aaa689a842f6768390e2f",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ccada60c7e76a1a0a9a57a65759248b06455d6dc6c1aaa689a842f6768390e2f",
+        "timestamp": "2026-03-29T13:07:16.062Z"
+      },
+      {
+        "hash": "e04b6190b10be6780cf23a69d127efbd531538bb12a619f7e51f4dbd4601a43f",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/e04b6190b10be6780cf23a69d127efbd531538bb12a619f7e51f4dbd4601a43f",
+        "timestamp": "2026-03-29T13:07:26.065Z"
+      },
+      {
+        "hash": "519ddee250f587174bef954cec4f516903205c21ef83310ec0ba78bd343f5f7b",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/519ddee250f587174bef954cec4f516903205c21ef83310ec0ba78bd343f5f7b",
+        "timestamp": "2026-03-29T13:07:36.053Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:07:36.053Z"
+  },
+  {
+    "index": 4,
+    "wallet": "GAR24LJ44QBMYDVWSOUYL6FIVFY7V2SQN76VJWQMJEFWVR3LCTFFWZ2W",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "7c28c8f4a8ee5e9d2c60a350ad7cd9c4c45a33bc09e3e10aecf6e26230ec9b72",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/7c28c8f4a8ee5e9d2c60a350ad7cd9c4c45a33bc09e3e10aecf6e26230ec9b72",
+    "actions": [
+      "unlock_item",
+      "claim_coffee",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "7c28c8f4a8ee5e9d2c60a350ad7cd9c4c45a33bc09e3e10aecf6e26230ec9b72",
+      "cce1ead5497d2166dd0cb00fecf16b1461f996d277621ef1d47bfeac37f0bdea",
+      "8688f8e159f3a4102ab57f14d91077f0ed625fb9543415bd49bf399fcffd6b35"
+    ],
+    "journey": [
+      {
+        "hash": "7c28c8f4a8ee5e9d2c60a350ad7cd9c4c45a33bc09e3e10aecf6e26230ec9b72",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/7c28c8f4a8ee5e9d2c60a350ad7cd9c4c45a33bc09e3e10aecf6e26230ec9b72",
+        "timestamp": "2026-03-29T13:07:46.115Z"
+      },
+      {
+        "hash": "cce1ead5497d2166dd0cb00fecf16b1461f996d277621ef1d47bfeac37f0bdea",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/cce1ead5497d2166dd0cb00fecf16b1461f996d277621ef1d47bfeac37f0bdea",
+        "timestamp": "2026-03-29T13:07:50.524Z"
+      },
+      {
+        "hash": "8688f8e159f3a4102ab57f14d91077f0ed625fb9543415bd49bf399fcffd6b35",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/8688f8e159f3a4102ab57f14d91077f0ed625fb9543415bd49bf399fcffd6b35",
+        "timestamp": "2026-03-29T13:07:55.529Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:07:55.529Z"
+  },
+  {
+    "index": 5,
+    "wallet": "GDZBK7NHRYIO2SJHJRJEFST4BVAPVVITYEDV5JCUOXGW5TFR5SX5WXKI",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "11c29955e2d098e7d4c0d1d27d6cdbb30e84005ebac702a75ba88bf78209e597",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/11c29955e2d098e7d4c0d1d27d6cdbb30e84005ebac702a75ba88bf78209e597",
+    "actions": [
+      "claim_coffee",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "11c29955e2d098e7d4c0d1d27d6cdbb30e84005ebac702a75ba88bf78209e597",
+      "3bbb3a4211484aebb815b16682f8f6b9442ed4e5935998cdc46da4f67d7fce9a"
+    ],
+    "journey": [
+      {
+        "hash": "11c29955e2d098e7d4c0d1d27d6cdbb30e84005ebac702a75ba88bf78209e597",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/11c29955e2d098e7d4c0d1d27d6cdbb30e84005ebac702a75ba88bf78209e597",
+        "timestamp": "2026-03-29T13:08:01.055Z"
+      },
+      {
+        "hash": "3bbb3a4211484aebb815b16682f8f6b9442ed4e5935998cdc46da4f67d7fce9a",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/3bbb3a4211484aebb815b16682f8f6b9442ed4e5935998cdc46da4f67d7fce9a",
+        "timestamp": "2026-03-29T13:08:06.163Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:08:06.163Z"
+  },
+  {
+    "index": 6,
+    "wallet": "GDVCA7F6H73FDUZRLA64J7E44VXR2UTD7WKFHPUNIUQPALMAE2FV2XV4",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "3d3231911f60228f1c8bca5554e3678ef1256769052409f2d5b1dd1b98cc238f",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/3d3231911f60228f1c8bca5554e3678ef1256769052409f2d5b1dd1b98cc238f",
+    "actions": [
+      "claim_ticket",
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "3d3231911f60228f1c8bca5554e3678ef1256769052409f2d5b1dd1b98cc238f",
+      "82fb13057c38bee094bf076c7e47421b7080f68b1a37f39b0ce6a6ac5ad8f335",
+      "e483f5c7d285288fbef0dcb6b8d2df76e554f8376a249f90ff2ba1fc28f91e8e"
+    ],
+    "journey": [
+      {
+        "hash": "3d3231911f60228f1c8bca5554e3678ef1256769052409f2d5b1dd1b98cc238f",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/3d3231911f60228f1c8bca5554e3678ef1256769052409f2d5b1dd1b98cc238f",
+        "timestamp": "2026-03-29T13:08:10.692Z"
+      },
+      {
+        "hash": "82fb13057c38bee094bf076c7e47421b7080f68b1a37f39b0ce6a6ac5ad8f335",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/82fb13057c38bee094bf076c7e47421b7080f68b1a37f39b0ce6a6ac5ad8f335",
+        "timestamp": "2026-03-29T13:08:16.629Z"
+      },
+      {
+        "hash": "e483f5c7d285288fbef0dcb6b8d2df76e554f8376a249f90ff2ba1fc28f91e8e",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/e483f5c7d285288fbef0dcb6b8d2df76e554f8376a249f90ff2ba1fc28f91e8e",
+        "timestamp": "2026-03-29T13:08:21.530Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:08:21.530Z"
+  },
+  {
+    "index": 7,
+    "wallet": "GBMS36E372UH3VB4GWN6Y43KCIEJ55WBNJRZ37X3TEGR2UYNHGPDDXEZ",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "6bba2bfe3971dcef9b6ad990228160356bed78230c1eaaae4577f7a05bf5fa28",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/6bba2bfe3971dcef9b6ad990228160356bed78230c1eaaae4577f7a05bf5fa28",
+    "actions": [
+      "claim_ticket",
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "6bba2bfe3971dcef9b6ad990228160356bed78230c1eaaae4577f7a05bf5fa28",
+      "0b52ee8ff157af8a3c729e53c61f78e7031484f220ab12060c68f14daf275285",
+      "7f46dfe62eb34b22e445ba810ac50f7677fb66719bb09f0261e591496037e420"
+    ],
+    "journey": [
+      {
+        "hash": "6bba2bfe3971dcef9b6ad990228160356bed78230c1eaaae4577f7a05bf5fa28",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/6bba2bfe3971dcef9b6ad990228160356bed78230c1eaaae4577f7a05bf5fa28",
+        "timestamp": "2026-03-29T13:08:26.151Z"
+      },
+      {
+        "hash": "0b52ee8ff157af8a3c729e53c61f78e7031484f220ab12060c68f14daf275285",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/0b52ee8ff157af8a3c729e53c61f78e7031484f220ab12060c68f14daf275285",
+        "timestamp": "2026-03-29T13:08:31.131Z"
+      },
+      {
+        "hash": "7f46dfe62eb34b22e445ba810ac50f7677fb66719bb09f0261e591496037e420",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/7f46dfe62eb34b22e445ba810ac50f7677fb66719bb09f0261e591496037e420",
+        "timestamp": "2026-03-29T13:08:36.526Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:08:36.527Z"
+  },
+  {
+    "index": 8,
+    "wallet": "GABVY5HOALUSQ6BFGENPMP2AAYD4ZGPZEGKMYDPUC5Y4YHRELHIC2RAN",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "dd2dbf07ff32706ab5fe9137b357fc7d620af8606a7c4c3b20dff107eabd8c7b",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/dd2dbf07ff32706ab5fe9137b357fc7d620af8606a7c4c3b20dff107eabd8c7b",
+    "actions": [
+      "unlock_item",
+      "claim_ticket",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "dd2dbf07ff32706ab5fe9137b357fc7d620af8606a7c4c3b20dff107eabd8c7b",
+      "89a80704bc34cadf787165f421eb8b56ef3034b63cf77c176a989644f43fcce5",
+      "49acc357aeacaf572eefa78cb7cb04ababfaf243d8ddcd3188c929f5f732c1e2"
+    ],
+    "journey": [
+      {
+        "hash": "dd2dbf07ff32706ab5fe9137b357fc7d620af8606a7c4c3b20dff107eabd8c7b",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/dd2dbf07ff32706ab5fe9137b357fc7d620af8606a7c4c3b20dff107eabd8c7b",
+        "timestamp": "2026-03-29T13:08:41.530Z"
+      },
+      {
+        "hash": "89a80704bc34cadf787165f421eb8b56ef3034b63cf77c176a989644f43fcce5",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/89a80704bc34cadf787165f421eb8b56ef3034b63cf77c176a989644f43fcce5",
+        "timestamp": "2026-03-29T13:08:46.532Z"
+      },
+      {
+        "hash": "49acc357aeacaf572eefa78cb7cb04ababfaf243d8ddcd3188c929f5f732c1e2",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/49acc357aeacaf572eefa78cb7cb04ababfaf243d8ddcd3188c929f5f732c1e2",
+        "timestamp": "2026-03-29T13:08:51.649Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:08:51.649Z"
+  },
+  {
+    "index": 9,
+    "wallet": "GCZ3NAYEURZP2YLZ4VNMY3ZY5DHKEJUVJYGQCIXHSMNEEHCP6TI32FT3",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "de3e936f2d95236a9e72012d8ed3c68f805e12c9c4bc5614f5ddc0b3b081b637",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/de3e936f2d95236a9e72012d8ed3c68f805e12c9c4bc5614f5ddc0b3b081b637",
+    "actions": [
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "de3e936f2d95236a9e72012d8ed3c68f805e12c9c4bc5614f5ddc0b3b081b637",
+      "60af568d6baacc2c35ecf71c2075e88a2d8790706fb3abbff5716b8b3ce509a3"
+    ],
+    "journey": [
+      {
+        "hash": "de3e936f2d95236a9e72012d8ed3c68f805e12c9c4bc5614f5ddc0b3b081b637",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/de3e936f2d95236a9e72012d8ed3c68f805e12c9c4bc5614f5ddc0b3b081b637",
+        "timestamp": "2026-03-29T13:08:56.082Z"
+      },
+      {
+        "hash": "60af568d6baacc2c35ecf71c2075e88a2d8790706fb3abbff5716b8b3ce509a3",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/60af568d6baacc2c35ecf71c2075e88a2d8790706fb3abbff5716b8b3ce509a3",
+        "timestamp": "2026-03-29T13:09:01.548Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:09:01.548Z"
+  },
+  {
+    "index": 10,
+    "wallet": "GDZBTENLB2XXIWIMENOJQZS33TMRNCKTT2AOPOWGZDXG2FNLT3FSCAFE",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "92a3b0bc6ae477e2af7918da55e8c498aa1188ac6cf93aa34f324648e6743cb7",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/92a3b0bc6ae477e2af7918da55e8c498aa1188ac6cf93aa34f324648e6743cb7",
+    "actions": [
+      "claim_coffee",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "92a3b0bc6ae477e2af7918da55e8c498aa1188ac6cf93aa34f324648e6743cb7",
+      "b7f4a64875c61ad149942c10ff28f138bcf603f35be30930b918d37ad9d1cabc"
+    ],
+    "journey": [
+      {
+        "hash": "92a3b0bc6ae477e2af7918da55e8c498aa1188ac6cf93aa34f324648e6743cb7",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/92a3b0bc6ae477e2af7918da55e8c498aa1188ac6cf93aa34f324648e6743cb7",
+        "timestamp": "2026-03-29T13:09:06.087Z"
+      },
+      {
+        "hash": "b7f4a64875c61ad149942c10ff28f138bcf603f35be30930b918d37ad9d1cabc",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/b7f4a64875c61ad149942c10ff28f138bcf603f35be30930b918d37ad9d1cabc",
+        "timestamp": "2026-03-29T13:09:11.106Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:09:11.107Z"
+  },
+  {
+    "index": 11,
+    "wallet": "GB245RBBIWUOVXFNSAT2WKCPIQ7K63EMZO5RU6FQVDCT23LH6F6ZQPJE",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "29d4a1c3a3bf621564fd8aa1d4b7eecd85ccc827dc6306130d5690ee93674ab2",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/29d4a1c3a3bf621564fd8aa1d4b7eecd85ccc827dc6306130d5690ee93674ab2",
+    "actions": [
+      "claim_coffee",
+      "unlock_item",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "29d4a1c3a3bf621564fd8aa1d4b7eecd85ccc827dc6306130d5690ee93674ab2",
+      "0b4f4d8b451ba27b25df0a2f3a5ecd78f1515572bbe93a7312058d85257cbc64",
+      "5e12ecfa72768ef65fa86d7e5123634c3ab2cba13a8ca0312cf7ec6914de009e"
+    ],
+    "journey": [
+      {
+        "hash": "29d4a1c3a3bf621564fd8aa1d4b7eecd85ccc827dc6306130d5690ee93674ab2",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/29d4a1c3a3bf621564fd8aa1d4b7eecd85ccc827dc6306130d5690ee93674ab2",
+        "timestamp": "2026-03-29T13:09:16.107Z"
+      },
+      {
+        "hash": "0b4f4d8b451ba27b25df0a2f3a5ecd78f1515572bbe93a7312058d85257cbc64",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/0b4f4d8b451ba27b25df0a2f3a5ecd78f1515572bbe93a7312058d85257cbc64",
+        "timestamp": "2026-03-29T13:09:21.558Z"
+      },
+      {
+        "hash": "5e12ecfa72768ef65fa86d7e5123634c3ab2cba13a8ca0312cf7ec6914de009e",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/5e12ecfa72768ef65fa86d7e5123634c3ab2cba13a8ca0312cf7ec6914de009e",
+        "timestamp": "2026-03-29T13:09:26.588Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:09:26.588Z"
+  },
+  {
+    "index": 12,
+    "wallet": "GA56KRCJVMGQPJLE3CWURZP4OLXGT4YIV52QIGB57LLMZKA35AAJYPQ3",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "408db25ea92dcd22533286aeec7cc2411831e7a0c596cac81ca2859ee2d8680c",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/408db25ea92dcd22533286aeec7cc2411831e7a0c596cac81ca2859ee2d8680c",
+    "actions": [
+      "unlock_item",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "408db25ea92dcd22533286aeec7cc2411831e7a0c596cac81ca2859ee2d8680c",
+      "6992c529ac0a9b065278095db718282c8ccc9f9ce6b2a6ce6edd204e9d2b269a"
+    ],
+    "journey": [
+      {
+        "hash": "408db25ea92dcd22533286aeec7cc2411831e7a0c596cac81ca2859ee2d8680c",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/408db25ea92dcd22533286aeec7cc2411831e7a0c596cac81ca2859ee2d8680c",
+        "timestamp": "2026-03-29T13:09:31.174Z"
+      },
+      {
+        "hash": "6992c529ac0a9b065278095db718282c8ccc9f9ce6b2a6ce6edd204e9d2b269a",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/6992c529ac0a9b065278095db718282c8ccc9f9ce6b2a6ce6edd204e9d2b269a",
+        "timestamp": "2026-03-29T13:09:36.080Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:09:36.080Z"
+  },
+  {
+    "index": 13,
+    "wallet": "GANP3CJHCXIMF42KP5NVEG6B6XRYWBLZQW3QEMWVBEC6QT7BJKCUSTH7",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "82eaa446e3ab0d0a134358f2cf88f6c79fcd338eb4415294e8b5d68439eebaae",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/82eaa446e3ab0d0a134358f2cf88f6c79fcd338eb4415294e8b5d68439eebaae",
+    "actions": [
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "82eaa446e3ab0d0a134358f2cf88f6c79fcd338eb4415294e8b5d68439eebaae",
+      "9ece9bcf09e673e957f37da9ad970facb5d7ccbd935eef243958bb3277303867"
+    ],
+    "journey": [
+      {
+        "hash": "82eaa446e3ab0d0a134358f2cf88f6c79fcd338eb4415294e8b5d68439eebaae",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/82eaa446e3ab0d0a134358f2cf88f6c79fcd338eb4415294e8b5d68439eebaae",
+        "timestamp": "2026-03-29T13:09:41.057Z"
+      },
+      {
+        "hash": "9ece9bcf09e673e957f37da9ad970facb5d7ccbd935eef243958bb3277303867",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/9ece9bcf09e673e957f37da9ad970facb5d7ccbd935eef243958bb3277303867",
+        "timestamp": "2026-03-29T13:09:46.118Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:09:46.119Z"
+  },
+  {
+    "index": 14,
+    "wallet": "GB4A6AP3QR4XSUZI3DL3NKGAYX76EH2BCIFB76D7PPG5BASPAXZRV5CK",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "9189b509fdc2f13bd3955bb0a82900045add892de36aaaefa821cab58d3aa071",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/9189b509fdc2f13bd3955bb0a82900045add892de36aaaefa821cab58d3aa071",
+    "actions": [
+      "claim_ticket",
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "9189b509fdc2f13bd3955bb0a82900045add892de36aaaefa821cab58d3aa071",
+      "ea134e99b2c0425fff19d30d5f5828aa5131bc878e97b01b8d98ee23cf4068ba",
+      "99e514ae2cf16997d1cba5b16144894a89420460d0e40cc9935044334fdf05c4"
+    ],
+    "journey": [
+      {
+        "hash": "9189b509fdc2f13bd3955bb0a82900045add892de36aaaefa821cab58d3aa071",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/9189b509fdc2f13bd3955bb0a82900045add892de36aaaefa821cab58d3aa071",
+        "timestamp": "2026-03-29T13:09:51.144Z"
+      },
+      {
+        "hash": "ea134e99b2c0425fff19d30d5f5828aa5131bc878e97b01b8d98ee23cf4068ba",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ea134e99b2c0425fff19d30d5f5828aa5131bc878e97b01b8d98ee23cf4068ba",
+        "timestamp": "2026-03-29T13:09:56.532Z"
+      },
+      {
+        "hash": "99e514ae2cf16997d1cba5b16144894a89420460d0e40cc9935044334fdf05c4",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/99e514ae2cf16997d1cba5b16144894a89420460d0e40cc9935044334fdf05c4",
+        "timestamp": "2026-03-29T13:10:01.531Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:10:01.531Z"
+  },
+  {
+    "index": 15,
+    "wallet": "GD7ELCIAEJRVHCPXVBRKQZWFTKFWNZGTKCKM4GCAGZWOLHDJTSLUK53Z",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "e91dbedfbaf88ae76ce8520b1ead1e30d12eff40c2645194de47d48c8bb79ff9",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/e91dbedfbaf88ae76ce8520b1ead1e30d12eff40c2645194de47d48c8bb79ff9",
+    "actions": [
+      "claim_coffee",
+      "unlock_item"
+    ],
+    "allHashes": [
+      "e91dbedfbaf88ae76ce8520b1ead1e30d12eff40c2645194de47d48c8bb79ff9",
+      "66119d688eceb56fae9c4ee6279beed47845727a3bf2744590f716f0f2acdbf7"
+    ],
+    "journey": [
+      {
+        "hash": "e91dbedfbaf88ae76ce8520b1ead1e30d12eff40c2645194de47d48c8bb79ff9",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/e91dbedfbaf88ae76ce8520b1ead1e30d12eff40c2645194de47d48c8bb79ff9",
+        "timestamp": "2026-03-29T13:10:06.095Z"
+      },
+      {
+        "hash": "66119d688eceb56fae9c4ee6279beed47845727a3bf2744590f716f0f2acdbf7",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/66119d688eceb56fae9c4ee6279beed47845727a3bf2744590f716f0f2acdbf7",
+        "timestamp": "2026-03-29T13:10:11.151Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:10:11.152Z"
+  },
+  {
+    "index": 16,
+    "wallet": "GB7KDZE3FEZ2X4N6OSVQ2XG4BHBAVCKUP2MXZJPQD7CQQWUEDNINFVKY",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "edd4c07d01cc952a342319eb1ac086b777547e9431d3e55137b8d7d054ebdd22",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/edd4c07d01cc952a342319eb1ac086b777547e9431d3e55137b8d7d054ebdd22",
+    "actions": [
+      "claim_ticket",
+      "unlock_item"
+    ],
+    "allHashes": [
+      "edd4c07d01cc952a342319eb1ac086b777547e9431d3e55137b8d7d054ebdd22",
+      "b58f94f80ca20686df79e6299f59ba0938d1cbc61fbb19eb2029c84f51e06a0a"
+    ],
+    "journey": [
+      {
+        "hash": "edd4c07d01cc952a342319eb1ac086b777547e9431d3e55137b8d7d054ebdd22",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/edd4c07d01cc952a342319eb1ac086b777547e9431d3e55137b8d7d054ebdd22",
+        "timestamp": "2026-03-29T13:10:16.128Z"
+      },
+      {
+        "hash": "b58f94f80ca20686df79e6299f59ba0938d1cbc61fbb19eb2029c84f51e06a0a",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/b58f94f80ca20686df79e6299f59ba0938d1cbc61fbb19eb2029c84f51e06a0a",
+        "timestamp": "2026-03-29T13:10:21.555Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:10:21.555Z"
+  },
+  {
+    "index": 17,
+    "wallet": "GAIARJ3SRKFXOSLC6TV7L4KCB2LCCZTQRF5MWTVTXBKI6G3CBCZST375",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "c18942c392d9597b0684259a4532bed75bb9aeef284d7f7ceba194a8350129c1",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/c18942c392d9597b0684259a4532bed75bb9aeef284d7f7ceba194a8350129c1",
+    "actions": [
+      "claim_ticket",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "c18942c392d9597b0684259a4532bed75bb9aeef284d7f7ceba194a8350129c1",
+      "526bb4971418f91270806a261c0b80a006c3799c9d2f4e200b2034d2ae9b6e1b"
+    ],
+    "journey": [
+      {
+        "hash": "c18942c392d9597b0684259a4532bed75bb9aeef284d7f7ceba194a8350129c1",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/c18942c392d9597b0684259a4532bed75bb9aeef284d7f7ceba194a8350129c1",
+        "timestamp": "2026-03-29T13:10:26.105Z"
+      },
+      {
+        "hash": "526bb4971418f91270806a261c0b80a006c3799c9d2f4e200b2034d2ae9b6e1b",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/526bb4971418f91270806a261c0b80a006c3799c9d2f4e200b2034d2ae9b6e1b",
+        "timestamp": "2026-03-29T13:10:31.529Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:10:31.529Z"
+  },
+  {
+    "index": 18,
+    "wallet": "GC3ITUPO4KXNXZIGBMKOQMWJPC27EIO4J6MCMAFAKTJXSD6CBJCLTJVB",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "b2d4dabc0d5558e76fbba30235ec3d68a5757044bb8c54c8ef5f17d7a7d81ce1",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/b2d4dabc0d5558e76fbba30235ec3d68a5757044bb8c54c8ef5f17d7a7d81ce1",
+    "actions": [
+      "claim_coffee",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "b2d4dabc0d5558e76fbba30235ec3d68a5757044bb8c54c8ef5f17d7a7d81ce1",
+      "d8026e0f73c3cf90e2451c6116ba64fb200bd64aed690700be772f83fe5d83c4"
+    ],
+    "journey": [
+      {
+        "hash": "b2d4dabc0d5558e76fbba30235ec3d68a5757044bb8c54c8ef5f17d7a7d81ce1",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/b2d4dabc0d5558e76fbba30235ec3d68a5757044bb8c54c8ef5f17d7a7d81ce1",
+        "timestamp": "2026-03-29T13:10:36.062Z"
+      },
+      {
+        "hash": "d8026e0f73c3cf90e2451c6116ba64fb200bd64aed690700be772f83fe5d83c4",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/d8026e0f73c3cf90e2451c6116ba64fb200bd64aed690700be772f83fe5d83c4",
+        "timestamp": "2026-03-29T13:10:41.625Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:10:41.625Z"
+  },
+  {
+    "index": 19,
+    "wallet": "GBD2EPV6FLXULMESGXG6UDMT7ECKR75V537BSFDRTKA6YYVAG2Q37JQH",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "c64bad3bdbb374feed3215bfdf4dff315973610faca3b6e9123e579420e4c52e",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/c64bad3bdbb374feed3215bfdf4dff315973610faca3b6e9123e579420e4c52e",
+    "actions": [
+      "claim_ticket",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "c64bad3bdbb374feed3215bfdf4dff315973610faca3b6e9123e579420e4c52e",
+      "640021ed7a75ccca4e616bf17cad07ad44dc62a4b769dc71a20f4a7b3973db8a"
+    ],
+    "journey": [
+      {
+        "hash": "c64bad3bdbb374feed3215bfdf4dff315973610faca3b6e9123e579420e4c52e",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/c64bad3bdbb374feed3215bfdf4dff315973610faca3b6e9123e579420e4c52e",
+        "timestamp": "2026-03-29T13:10:46.644Z"
+      },
+      {
+        "hash": "640021ed7a75ccca4e616bf17cad07ad44dc62a4b769dc71a20f4a7b3973db8a",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/640021ed7a75ccca4e616bf17cad07ad44dc62a4b769dc71a20f4a7b3973db8a",
+        "timestamp": "2026-03-29T13:10:51.051Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:10:51.051Z"
+  },
+  {
+    "index": 20,
+    "wallet": "GCVZTABU2NOMJMX34FVT6IUTACHF3SRIBLNCF5BMDETJZ7E3W3UMALDG",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "731e8aa202d8e58fbed37c16c4eb18bcfacdcd804a7c353574349bba9989c586",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/731e8aa202d8e58fbed37c16c4eb18bcfacdcd804a7c353574349bba9989c586",
+    "actions": [
+      "unlock_item",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "731e8aa202d8e58fbed37c16c4eb18bcfacdcd804a7c353574349bba9989c586",
+      "cd7dfac51928e1e81affe9acbd78fdf1523d5bc386131bdbd8b2d265ea0d2669"
+    ],
+    "journey": [
+      {
+        "hash": "731e8aa202d8e58fbed37c16c4eb18bcfacdcd804a7c353574349bba9989c586",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/731e8aa202d8e58fbed37c16c4eb18bcfacdcd804a7c353574349bba9989c586",
+        "timestamp": "2026-03-29T13:10:56.527Z"
+      },
+      {
+        "hash": "cd7dfac51928e1e81affe9acbd78fdf1523d5bc386131bdbd8b2d265ea0d2669",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/cd7dfac51928e1e81affe9acbd78fdf1523d5bc386131bdbd8b2d265ea0d2669",
+        "timestamp": "2026-03-29T13:11:01.076Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:11:01.077Z"
+  },
+  {
+    "index": 21,
+    "wallet": "GAIW4QJHCDEMTPLA6YXQZT2FV73FWNXBR6EITNLUMYMI35DHVXAJYW2R",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "1d730734ad881cbe9c266f6c55463e3a009c906428e884f5b96f633b35453f6b",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/1d730734ad881cbe9c266f6c55463e3a009c906428e884f5b96f633b35453f6b",
+    "actions": [
+      "unlock_item",
+      "claim_coffee",
+      "claim_ticket"
+    ],
+    "allHashes": [
+      "1d730734ad881cbe9c266f6c55463e3a009c906428e884f5b96f633b35453f6b",
+      "2795a10fbb03c50038354e9def8d431ec1e7512e3716ee03293d8fc21d6e36b2",
+      "bc35061a568bdddf9b70a2e41f248a3c33cfd11b5225d973bffc44f80cb7de1a"
+    ],
+    "journey": [
+      {
+        "hash": "1d730734ad881cbe9c266f6c55463e3a009c906428e884f5b96f633b35453f6b",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/1d730734ad881cbe9c266f6c55463e3a009c906428e884f5b96f633b35453f6b",
+        "timestamp": "2026-03-29T13:11:06.083Z"
+      },
+      {
+        "hash": "2795a10fbb03c50038354e9def8d431ec1e7512e3716ee03293d8fc21d6e36b2",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/2795a10fbb03c50038354e9def8d431ec1e7512e3716ee03293d8fc21d6e36b2",
+        "timestamp": "2026-03-29T13:11:11.117Z"
+      },
+      {
+        "hash": "bc35061a568bdddf9b70a2e41f248a3c33cfd11b5225d973bffc44f80cb7de1a",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/bc35061a568bdddf9b70a2e41f248a3c33cfd11b5225d973bffc44f80cb7de1a",
+        "timestamp": "2026-03-29T13:11:16.546Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:11:16.546Z"
+  },
+  {
+    "index": 22,
+    "wallet": "GDV24QUXDEOAE5VCYSEHDDM2ZEK6WVS4FB6KIXP2YBICRS2CWXXVK54X",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "7f1c3cebef87b1431659f30fe198d15c24114da43d9b090eba99924a78539fcb",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/7f1c3cebef87b1431659f30fe198d15c24114da43d9b090eba99924a78539fcb",
+    "actions": [
+      "unlock_item",
+      "claim_ticket",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "7f1c3cebef87b1431659f30fe198d15c24114da43d9b090eba99924a78539fcb",
+      "60399cea5246554326d3c9175ed19fdc8c6a60ca4b73eaf0b021f722ec6f05d2",
+      "c797ad75d0e2ac1c18e4d6e72cbbe9ed2a1fa589d98c2e4d1d12ccabc15d0a44"
+    ],
+    "journey": [
+      {
+        "hash": "7f1c3cebef87b1431659f30fe198d15c24114da43d9b090eba99924a78539fcb",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/7f1c3cebef87b1431659f30fe198d15c24114da43d9b090eba99924a78539fcb",
+        "timestamp": "2026-03-29T13:11:21.093Z"
+      },
+      {
+        "hash": "60399cea5246554326d3c9175ed19fdc8c6a60ca4b73eaf0b021f722ec6f05d2",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/60399cea5246554326d3c9175ed19fdc8c6a60ca4b73eaf0b021f722ec6f05d2",
+        "timestamp": "2026-03-29T13:11:26.069Z"
+      },
+      {
+        "hash": "c797ad75d0e2ac1c18e4d6e72cbbe9ed2a1fa589d98c2e4d1d12ccabc15d0a44",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/c797ad75d0e2ac1c18e4d6e72cbbe9ed2a1fa589d98c2e4d1d12ccabc15d0a44",
+        "timestamp": "2026-03-29T13:11:31.556Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:11:31.557Z"
+  },
+  {
+    "index": 23,
+    "wallet": "GDKIIQACJQBGME4LIP36LVI4CX4LEULXNMRHDBLSUGDU3LHMVKSJYVWK",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "d23cb96fd2d623ed93d918b51bd52a105d7d7aa03b7a0518a393ae57c7fdab7d",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/d23cb96fd2d623ed93d918b51bd52a105d7d7aa03b7a0518a393ae57c7fdab7d",
+    "actions": [
+      "claim_ticket",
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "d23cb96fd2d623ed93d918b51bd52a105d7d7aa03b7a0518a393ae57c7fdab7d",
+      "a82d99c4824dedfea2949d4129fa42380373632060b4726400e79d96f488eb5d",
+      "2d1c625491c94093fbdcdfe0c37c8ff00ccab910a4d2588074125f709a52470e"
+    ],
+    "journey": [
+      {
+        "hash": "d23cb96fd2d623ed93d918b51bd52a105d7d7aa03b7a0518a393ae57c7fdab7d",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/d23cb96fd2d623ed93d918b51bd52a105d7d7aa03b7a0518a393ae57c7fdab7d",
+        "timestamp": "2026-03-29T13:13:26.530Z"
+      },
+      {
+        "hash": "a82d99c4824dedfea2949d4129fa42380373632060b4726400e79d96f488eb5d",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/a82d99c4824dedfea2949d4129fa42380373632060b4726400e79d96f488eb5d",
+        "timestamp": "2026-03-29T13:13:31.714Z"
+      },
+      {
+        "hash": "2d1c625491c94093fbdcdfe0c37c8ff00ccab910a4d2588074125f709a52470e",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/2d1c625491c94093fbdcdfe0c37c8ff00ccab910a4d2588074125f709a52470e",
+        "timestamp": "2026-03-29T13:13:36.628Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:13:36.628Z"
+  },
+  {
+    "index": 24,
+    "wallet": "GBSS332OTOAJSNVDMBFCUYLDPJ3QUGDA36EVYPXYHO32K3SXWML7FNLQ",
+    "status": "success",
+    "txCount": 3,
+    "primaryHash": "ca3d5597f6f9c355ac74e25f2a37ddce47c9607f7368d37b158651b5fffdfefd",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/ca3d5597f6f9c355ac74e25f2a37ddce47c9607f7368d37b158651b5fffdfefd",
+    "actions": [
+      "unlock_item",
+      "claim_ticket",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "ca3d5597f6f9c355ac74e25f2a37ddce47c9607f7368d37b158651b5fffdfefd",
+      "495952ea8ccafda91a06d2521a3a7138012ddf8496ddca54eb095ff9dfc8d42d",
+      "6f421b9fadf09b46e951501a36492a52eaedcc516fe8629114c415a39a7a01da"
+    ],
+    "journey": [
+      {
+        "hash": "ca3d5597f6f9c355ac74e25f2a37ddce47c9607f7368d37b158651b5fffdfefd",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/ca3d5597f6f9c355ac74e25f2a37ddce47c9607f7368d37b158651b5fffdfefd",
+        "timestamp": "2026-03-29T13:13:41.543Z"
+      },
+      {
+        "hash": "495952ea8ccafda91a06d2521a3a7138012ddf8496ddca54eb095ff9dfc8d42d",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/495952ea8ccafda91a06d2521a3a7138012ddf8496ddca54eb095ff9dfc8d42d",
+        "timestamp": "2026-03-29T13:13:46.643Z"
+      },
+      {
+        "hash": "6f421b9fadf09b46e951501a36492a52eaedcc516fe8629114c415a39a7a01da",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/6f421b9fadf09b46e951501a36492a52eaedcc516fe8629114c415a39a7a01da",
+        "timestamp": "2026-03-29T13:13:51.540Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:13:51.540Z"
+  },
+  {
+    "index": 25,
+    "wallet": "GDT5O2WUEVTUXZQAE66NTCKFLDLRZLMTJQOIQIOQ5ZVH3WAL2ZCUIVHU",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "c57d1f85e559231105afcff60f8d051ceba6d18a42df734789ccd2f359499e4f",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/c57d1f85e559231105afcff60f8d051ceba6d18a42df734789ccd2f359499e4f",
+    "actions": [
+      "claim_ticket",
+      "unlock_item"
+    ],
+    "allHashes": [
+      "c57d1f85e559231105afcff60f8d051ceba6d18a42df734789ccd2f359499e4f",
+      "eef8857c6def28a95dbdf56223d0ce8e4c06f90d7f61989d13fa4030c624b31b"
+    ],
+    "journey": [
+      {
+        "hash": "c57d1f85e559231105afcff60f8d051ceba6d18a42df734789ccd2f359499e4f",
+        "action": "claim_ticket",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/c57d1f85e559231105afcff60f8d051ceba6d18a42df734789ccd2f359499e4f",
+        "timestamp": "2026-03-29T13:13:56.090Z"
+      },
+      {
+        "hash": "eef8857c6def28a95dbdf56223d0ce8e4c06f90d7f61989d13fa4030c624b31b",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/eef8857c6def28a95dbdf56223d0ce8e4c06f90d7f61989d13fa4030c624b31b",
+        "timestamp": "2026-03-29T13:14:01.533Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:14:01.533Z"
+  },
+  {
+    "index": 26,
+    "wallet": "GAJZYIT4EP65KR5B2HVH2AFFEFENEZIDIX7UUGLYDKGC7LPPZK3RKE5B",
+    "status": "success",
+    "txCount": 2,
+    "primaryHash": "81fa2bcddc287116914f064b06b1985daf4ed3bc8c1c745c67687bc92c2eb0ef",
+    "primaryExplorerUrl": "https://stellar.expert/explorer/testnet/tx/81fa2bcddc287116914f064b06b1985daf4ed3bc8c1c745c67687bc92c2eb0ef",
+    "actions": [
+      "unlock_item",
+      "claim_coffee"
+    ],
+    "allHashes": [
+      "81fa2bcddc287116914f064b06b1985daf4ed3bc8c1c745c67687bc92c2eb0ef",
+      "44e7ad641d2a34e67738e343725455c8d2db56fd4340260edfc933babf5907c0"
+    ],
+    "journey": [
+      {
+        "hash": "81fa2bcddc287116914f064b06b1985daf4ed3bc8c1c745c67687bc92c2eb0ef",
+        "action": "unlock_item",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/81fa2bcddc287116914f064b06b1985daf4ed3bc8c1c745c67687bc92c2eb0ef",
+        "timestamp": "2026-03-29T13:14:06.533Z"
+      },
+      {
+        "hash": "44e7ad641d2a34e67738e343725455c8d2db56fd4340260edfc933babf5907c0",
+        "action": "claim_coffee",
+        "explorerUrl": "https://stellar.expert/explorer/testnet/tx/44e7ad641d2a34e67738e343725455c8d2db56fd4340260edfc933babf5907c0",
+        "timestamp": "2026-03-29T13:14:11.654Z"
+      }
+    ],
+    "note": "Synthetic load validation with real onchain testnet transactions.",
+    "createdAt": "2026-03-29T13:14:11.654Z"
+  }
+]
