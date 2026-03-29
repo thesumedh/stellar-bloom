@@ -1,134 +1,192 @@
 /**
- * StellarBloom — 30 Testnet User Validation Script
- * Generates 30 real funded Stellar Testnet accounts + sends a real
- * gasless transaction from each → outputs README-ready wallet table.
+ * StellarBloom — Synthetic Load Validation Script
+ *
+ * Creates 30+ real Stellar testnet wallets through the relayer itself and
+ * executes 2-3 real sponsored transactions per wallet. This is intended for
+ * Black Belt synthetic load proof, not for fabricating user feedback.
  */
 
 import { Keypair } from '@stellar/stellar-sdk';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 
-const RELAYER_URL = process.env.RELAYER_URL || 'http://localhost:3000';
-const FRIENDBOT   = 'https://friendbot.stellar.org';
-const API_KEY     = 'sb_test_5kq9v2x8m4j1c0p3';
-const RESULTS_FILE = './data/user-validation-results.json';
-const USER_COUNT = 30;
-// Weighted distribution: most users do 1 tx, some do 2-3, a few do 4-5
+const RELAYER_URL = (process.env.RELAYER_URL || 'http://localhost:3000').replace(/\/$/, '');
+const API_KEY = process.env.RELAYER_API_KEY || 'sb_test_5kq9v2x8m4j1c0p3';
+const RESULTS_FILE = './data/synthetic-validation-results.json';
+const TABLE_FILE = './data/synthetic-validation-table.md';
+const USER_COUNT = Number(process.env.USER_COUNT || 30);
+const ACTIONS = ['claim_coffee', 'claim_ticket', 'unlock_item'];
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+class RateLimitError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'RateLimitError';
+  }
+}
+
 function randomTxCount() {
-  const roll = Math.random();
-  if (roll < 0.45) return 1;  // 45% — casual users
-  if (roll < 0.72) return 2;  // 27% — interested users
-  if (roll < 0.88) return 3;  // 16% — engaged users
-  if (roll < 0.96) return 4;  //  8% — power users
-  return 5;                   //  4% — super users
+  return Math.random() < 0.65 ? 2 : 3;
 }
 
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-async function fundAccount(publicKey) {
-  const res = await fetch(`${FRIENDBOT}?addr=${publicKey}`);
-  if (!res.ok) throw new Error(`Friendbot failed: ${res.status}`);
+function pickAction(previousActions) {
+  const unseen = ACTIONS.filter((action) => !previousActions.includes(action));
+  const pool = unseen.length > 0 ? unseen : ACTIONS;
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
-async function sendGaslessIntent(keypair) {
-  const payload = JSON.stringify({
-    action: 'claim_coffee',
+function buildPayload(keypair, action) {
+  return JSON.stringify({
+    action,
     userPubKey: keypair.publicKey(),
-    nonce: Math.random().toString(36).slice(2) + Date.now().toString(36),
+    nonce: `${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`,
     timestamp: Date.now(),
   });
+}
 
-  const sigBuffer = keypair.sign(Buffer.from(payload));
-  const signature = Buffer.from(sigBuffer).toString('base64');
+async function sendGaslessIntent(keypair, action) {
+  const payload = buildPayload(keypair, action);
+  const signature = Buffer.from(keypair.sign(Buffer.from(payload))).toString('base64');
 
   const res = await fetch(`${RELAYER_URL}/relay/intent`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': API_KEY,
+    },
     body: JSON.stringify({ payload, signature, pubKey: keypair.publicKey() }),
   });
 
-  const data = await res.json();
-  if (!data.success) throw new Error(data.error || JSON.stringify(data));
-  return data.hash;
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok || !data.success) {
+    if (res.status === 429 || `${data.error || ''}`.includes('Too many requests')) {
+      throw new RateLimitError(data.error || 'Relayer rate limit reached. Wait 15 minutes and rerun to resume.');
+    }
+    throw new Error(data.error || `Intent relay failed with ${res.status}`);
+  }
+
+  return {
+    hash: data.hash,
+    action,
+    explorerUrl: `https://stellar.expert/explorer/testnet/tx/${data.hash}`,
+    timestamp: new Date().toISOString(),
+  };
+}
+
+function loadExistingResults() {
+  if (!existsSync(RESULTS_FILE)) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(readFileSync(RESULTS_FILE, 'utf8'));
+    return parsed.filter((entry) => entry.status === 'success');
+  } catch {
+    return [];
+  }
+}
+
+function buildMarkdownTable(results) {
+  const lines = [
+    '| # | Wallet | Explorer | Tx Count | Actions |',
+    '|---|---|---|---:|---|',
+  ];
+
+  results.forEach((result) => {
+    lines.push(
+      `| ${result.index} | \`${result.wallet}\` | [View on Stellar Expert](${result.primaryExplorerUrl}) | ${result.txCount} | ${result.actions.join(', ')} |`
+    );
+  });
+
+  return `${lines.join('\n')}\n`;
+}
+
+function persistArtifacts(results) {
+  writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
+  writeFileSync(TABLE_FILE, buildMarkdownTable(results));
+}
+
+async function createSyntheticJourney(index) {
+  const keypair = Keypair.random();
+  const plannedTxCount = randomTxCount();
+  const journey = [];
+
+  console.log(`── Synthetic Wallet ${index}/${USER_COUNT} ──`);
+  console.log(`  Wallet: ${keypair.publicKey()}`);
+  console.log(`  Planned sponsored txs: ${plannedTxCount}`);
+
+  for (let step = 0; step < plannedTxCount; step += 1) {
+    const action = pickAction(journey.map((entry) => entry.action));
+    process.stdout.write(`  TX ${step + 1}/${plannedTxCount} (${action})... `);
+    const tx = await sendGaslessIntent(keypair, action);
+    journey.push(tx);
+    console.log(`✅ ${tx.hash.slice(0, 12)}...`);
+
+    if (step < plannedTxCount - 1) {
+      await sleep(1800);
+    }
+  }
+
+  return {
+    index,
+    wallet: keypair.publicKey(),
+    status: 'success',
+    txCount: journey.length,
+    primaryHash: journey[0]?.hash || null,
+    primaryExplorerUrl: journey[0]?.explorerUrl || null,
+    actions: journey.map((entry) => entry.action),
+    allHashes: journey.map((entry) => entry.hash),
+    journey,
+    note: 'Synthetic load validation with real onchain testnet transactions.',
+    createdAt: new Date().toISOString(),
+  };
 }
 
 async function main() {
-  console.log(`\n🚀 StellarBloom — Generating ${USER_COUNT} Testnet Users`);
-  console.log(`   Relayer: ${RELAYER_URL}\n`);
+  console.log(`\n🚀 StellarBloom — Synthetic Validation Cohort`);
+  console.log(`   Relayer: ${RELAYER_URL}`);
+  console.log(`   Goal: ${USER_COUNT} wallets with 2-3 real sponsored actions each\n`);
 
-  // Load previously completed results to allow resume
-  let results = [];
-  if (existsSync(RESULTS_FILE)) {
-    results = JSON.parse(readFileSync(RESULTS_FILE, 'utf8'));
-    console.log(`   Resumed: ${results.length} already done\n`);
+  const results = loadExistingResults();
+  if (results.length > 0) {
+    console.log(`   Resume: ${results.length} successful wallets already captured\n`);
   }
 
-  const startIndex = results.length;
-
-  for (let i = startIndex; i < USER_COUNT; i++) {
-    console.log(`── User ${i + 1}/${USER_COUNT} ──`);
-    const kp = Keypair.random();
-    console.log(`  Wallet: ${kp.publicKey()}`);
-
-    const txCount = randomTxCount();
-    console.log(`  Transactions planned: ${txCount}`);
+  for (let i = results.length; i < USER_COUNT; i += 1) {
     try {
-      process.stdout.write(`  Funding via Friendbot... `);
-      await fundAccount(kp.publicKey());
-      console.log(`✅`);
-      await sleep(2500);
-
-      const hashes = [];
-      for (let t = 0; t < txCount; t++) {
-        process.stdout.write(`  TX ${t + 1}/${txCount}... `);
-        try {
-          const hash = await sendGaslessIntent(kp);
-          hashes.push(hash);
-          console.log(`✅ ${hash.slice(0,12)}...`);
-        } catch (e) {
-          console.log(`❌ ${e.message}`);
-          break; // stop sending more txs for this user if one fails
-        }
-        if (t < txCount - 1) await sleep(1500);
+      const result = await createSyntheticJourney(i + 1);
+      results.push(result);
+      persistArtifacts(results);
+    } catch (error) {
+      if (error instanceof RateLimitError) {
+        persistArtifacts(results);
+        console.log(`❌ ${error.message}`);
+        console.log(`   Saved ${results.length} successful wallets so far.`);
+        console.log('   Rerun `npm run synthetic:validate` after the rate-limit window resets.\n');
+        break;
       }
-
-      const primaryHash = hashes[0] || null;
-      results.push({
-        index: i + 1,
-        wallet: kp.publicKey(),
-        hash: primaryHash,
-        allHashes: hashes,
-        txCount: hashes.length,
-        timestamp: new Date().toISOString()
-      });
-    } catch (err) {
-      console.log(`❌ ${err.message}`);
-      results.push({ index: i + 1, wallet: kp.publicKey(), hash: null, txCount: 0, error: err.message, timestamp: new Date().toISOString() });
+      console.log(`❌ ${error.message}`);
+      console.log('   Retrying with a fresh wallet on the next loop.\n');
+      await sleep(2500);
+      i -= 1;
+      continue;
     }
 
-    // Save after each user so we can resume if it crashes
-    writeFileSync(RESULTS_FILE, JSON.stringify(results, null, 2));
-
-    if (i < USER_COUNT - 1) await sleep(3000);
+    if (i < USER_COUNT - 1) {
+      await sleep(2500);
+    }
   }
 
-  const successful = results.filter(r => r.hash);
-  const failed = results.filter(r => !r.hash);
-
-  console.log(`\n\n══════════════════════════════════════════════════════`);
-  console.log(`✅ ${successful.length}/${USER_COUNT} users succeeded`);
-  if (failed.length) console.log(`❌ ${failed.length} failed (check data/user-validation-results.json)`);
+  console.log(`\n══════════════════════════════════════════════════════`);
+  console.log(`✅ ${results.length}/${USER_COUNT} synthetic wallets completed`);
+  console.log(`📄 Results saved to: ${RESULTS_FILE}`);
+  console.log(`📋 README table saved to: ${TABLE_FILE}`);
   console.log(`══════════════════════════════════════════════════════\n`);
 
-  console.log(`📋 README USER WALLET TABLE:\n`);
-  results.forEach(r => {
-    const link = r.hash
-      ? `https://stellar.expert/explorer/testnet/tx/${r.hash}`
-      : 'N/A';
-    console.log(`| ${r.index} | \`${r.wallet}\` | [View on Stellar Expert](${link}) |`);
-  });
-
-  console.log(`\n══════════════════════════════════════════════════════\n`);
-  console.log(`Results saved to: ${RESULTS_FILE}`);
+  console.log(buildMarkdownTable(results));
 }
 
-main().catch(console.error);
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

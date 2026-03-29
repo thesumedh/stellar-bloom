@@ -3,6 +3,7 @@ import cors from 'cors';
 import { Horizon, TransactionBuilder, Networks, Keypair, Operation, Asset } from '@stellar/stellar-sdk';
 import rateLimit from 'express-rate-limit';
 import 'dotenv/config';
+import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
 
 const app = express();
 
@@ -25,11 +26,19 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
+const STROOPS_PER_XLM = 10000000;
+const DEFAULT_INTENT_FEE_STROOPS = 100;
+const FEE_BUMP_MAX_FEE_STROOPS = 10000;
+const DEFAULT_INTENT_FEE_XLM = DEFAULT_INTENT_FEE_STROOPS / STROOPS_PER_XLM;
+const FEE_BUMP_MAX_FEE_XLM = FEE_BUMP_MAX_FEE_STROOPS / STROOPS_PER_XLM;
+const DEFAULT_INTENT_PAYMENT_XLM = 0.01;
+const DEFAULT_CREATE_ACCOUNT_XLM = 2.5;
+const DEFAULT_API_KEY = 'sb_test_5kq9v2x8m4j1c0p3';
+
 // --- In-Memory API Key & Gas Budget Database ---
 // In a real startup, this connects to PostgreSQL or Redis
 const apiKeysDb = {
-    // Starting with a seed key mapping to track app usage
-    'sb_test_5kq9v2x8m4j1c0p3': { transactions: 0, gasSponsored: 0, appName: 'Demo App' }
+    [DEFAULT_API_KEY]: { transactions: 0, gasSponsored: 0, appName: 'Demo App' }
 };
 
 // --- Rate Limiting State for Intents ---
@@ -41,8 +50,6 @@ const seenNonces = new Set(); // store used nonces (in prod, use Redis with TTL)
 // --- Stellar Configuration ---
 const server = new Horizon.Server("https://horizon-testnet.stellar.org");
 const SPONSOR_SECRET = process.env.SPONSOR_SECRET;
-
-import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
 
 // --- Persistent Transaction Log ---
 const DATA_DIR = './data';
@@ -62,13 +69,188 @@ function appendTx(entry) {
     writeFileSync(TX_LOG_FILE, JSON.stringify(log, null, 2));
 }
 
+function roundXlm(value) {
+    return Number((Number(value) || 0).toFixed(7));
+}
+
+function toDayKey(timestamp) {
+    return timestamp?.slice(0, 10) || 'unknown';
+}
+
+function resolveAccountId(source) {
+    if (!source) return null;
+    if (typeof source === 'string') return source;
+    if (typeof source.accountId === 'function') return source.accountId();
+    return null;
+}
+
+function normalizeTxLog(log) {
+    const chronological = [...log].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+
+    return chronological.map((entry) => {
+        const route = entry.route || '/relay/intent';
+        let transactionType = entry.transactionType || (route === '/relay' ? 'fee_bump' : 'sponsored_intent');
+        let sponsoredFeeXlm = Number.isFinite(entry.sponsoredFeeXlm)
+            ? Number(entry.sponsoredFeeXlm)
+            : Number(entry.xlmFee ?? 0);
+        let sponsoredAmountXlm = Number.isFinite(entry.sponsoredAmountXlm)
+            ? Number(entry.sponsoredAmountXlm)
+            : null;
+        let sponsoredTotalXlm = Number.isFinite(entry.sponsoredTotalXlm)
+            ? Number(entry.sponsoredTotalXlm)
+            : null;
+        let indexingConfidence = sponsoredTotalXlm !== null ? 'exact' : 'legacy';
+
+        if (!Number.isFinite(sponsoredFeeXlm)) {
+            sponsoredFeeXlm = 0;
+        }
+
+        if (sponsoredTotalXlm === null) {
+            sponsoredAmountXlm = sponsoredAmountXlm ?? 0;
+            indexingConfidence = 'legacy_fee_only';
+            sponsoredTotalXlm = roundXlm((sponsoredAmountXlm ?? 0) + sponsoredFeeXlm);
+        }
+
+        return {
+            ...entry,
+            route,
+            transactionType,
+            sponsoredFeeXlm: roundXlm(sponsoredFeeXlm),
+            sponsoredAmountXlm: roundXlm(sponsoredAmountXlm ?? 0),
+            sponsoredTotalXlm: roundXlm(sponsoredTotalXlm),
+            explorerUrl: entry.hash ? `https://stellar.expert/explorer/testnet/tx/${entry.hash}` : null,
+            indexingConfidence,
+            timestamp: entry.timestamp || new Date(0).toISOString(),
+        };
+    });
+}
+
+function buildMetrics(log) {
+    const normalized = normalizeTxLog(log);
+    const transactionsByDay = {};
+    const dailyActiveUserSets = {};
+    const transactionsByAction = {};
+    const transactionsByType = {};
+    const walletStats = new Map();
+
+    for (const tx of normalized) {
+        const day = toDayKey(tx.timestamp);
+        transactionsByDay[day] = (transactionsByDay[day] || 0) + 1;
+        transactionsByAction[tx.action || 'unknown'] = (transactionsByAction[tx.action || 'unknown'] || 0) + 1;
+        transactionsByType[tx.transactionType || 'unknown'] = (transactionsByType[tx.transactionType || 'unknown'] || 0) + 1;
+
+        if (!dailyActiveUserSets[day]) {
+            dailyActiveUserSets[day] = new Set();
+        }
+        if (tx.pubKey) {
+            dailyActiveUserSets[day].add(tx.pubKey);
+        }
+
+        if (!tx.pubKey) continue;
+
+        const existing = walletStats.get(tx.pubKey) || {
+            pubKey: tx.pubKey,
+            txCount: 0,
+            firstSeen: tx.timestamp,
+            lastSeen: tx.timestamp,
+            actions: new Set(),
+            days: new Set(),
+            totalSponsoredXlm: 0,
+            firstHash: tx.hash || null,
+        };
+
+        existing.txCount += 1;
+        existing.totalSponsoredXlm += tx.sponsoredTotalXlm || 0;
+        existing.actions.add(tx.action || 'unknown');
+        existing.days.add(day);
+        existing.firstSeen = new Date(tx.timestamp) < new Date(existing.firstSeen) ? tx.timestamp : existing.firstSeen;
+        existing.lastSeen = new Date(tx.timestamp) > new Date(existing.lastSeen) ? tx.timestamp : existing.lastSeen;
+        if (!existing.firstHash && tx.hash) {
+            existing.firstHash = tx.hash;
+        }
+
+        walletStats.set(tx.pubKey, existing);
+    }
+
+    const walletSummaries = Array.from(walletStats.values()).map((wallet) => ({
+        pubKey: wallet.pubKey,
+        txCount: wallet.txCount,
+        firstSeen: wallet.firstSeen,
+        lastSeen: wallet.lastSeen,
+        dayCount: wallet.days.size,
+        actions: Array.from(wallet.actions),
+        totalSponsoredXlm: roundXlm(wallet.totalSponsoredXlm),
+        explorerUrl: wallet.firstHash ? `https://stellar.expert/explorer/testnet/tx/${wallet.firstHash}` : null,
+    }));
+
+    const now = new Date();
+    const todayKey = now.toISOString().slice(0, 10);
+    const sevenDayCutoff = new Date(now);
+    sevenDayCutoff.setUTCDate(sevenDayCutoff.getUTCDate() - 6);
+
+    const totalTransactions = normalized.length;
+    const uniqueUsers = walletSummaries.length;
+    const repeatUsers = walletSummaries.filter((wallet) => wallet.txCount >= 2).length;
+    const powerUsers = walletSummaries.filter((wallet) => wallet.txCount >= 3).length;
+    const multiDayUsers = walletSummaries.filter((wallet) => wallet.dayCount >= 2).length;
+    const activeToday = walletSummaries.filter((wallet) => wallet.lastSeen?.startsWith(todayKey)).length;
+    const activeLast7Days = walletSummaries.filter((wallet) => new Date(wallet.lastSeen) >= sevenDayCutoff).length;
+    const sponsoredFeeXlm = roundXlm(normalized.reduce((sum, tx) => sum + (tx.sponsoredFeeXlm || 0), 0));
+    const sponsoredValueXlm = roundXlm(normalized.reduce((sum, tx) => sum + (tx.sponsoredAmountXlm || 0), 0));
+    const sponsorSpendTotalXlm = roundXlm(normalized.reduce((sum, tx) => sum + (tx.sponsoredTotalXlm || 0), 0));
+    const repeatUserRatePct = uniqueUsers ? Number((((repeatUsers / uniqueUsers) || 0) * 100).toFixed(1)) : 0;
+    const avgTransactionsPerUser = uniqueUsers ? Number((totalTransactions / uniqueUsers).toFixed(2)) : 0;
+
+    return {
+        totalTransactions,
+        uniqueUsers,
+        repeatUsers,
+        powerUsers,
+        multiDayUsers,
+        activeToday,
+        activeLast7Days,
+        avgTransactionsPerUser,
+        repeatUserRatePct,
+        xlmSponsored: sponsorSpendTotalXlm.toFixed(7),
+        sponsoredFeeXlm: sponsoredFeeXlm.toFixed(7),
+        sponsoredValueXlm: sponsoredValueXlm.toFixed(7),
+        sponsorSpendTotalXlm: sponsorSpendTotalXlm.toFixed(7),
+        transactionsByDay,
+        dailyActiveUsers: Object.fromEntries(
+            Object.entries(dailyActiveUserSets).map(([day, set]) => [day, set.size])
+        ),
+        transactionsByAction,
+        transactionsByType,
+        topWallets: walletSummaries
+            .sort((a, b) => b.txCount - a.txCount || new Date(b.lastSeen) - new Date(a.lastSeen))
+            .slice(0, 5),
+        recentTransactions: [...normalized]
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .slice(0, 10),
+        goalProgress: {
+            targetWallets: 30,
+            currentWallets: uniqueUsers,
+            currentTransactions: totalTransactions,
+            walletGoalMet: uniqueUsers >= 30,
+        },
+        indexing: {
+            source: 'relayer/data/transactions.json',
+            endpoint: '/api/metrics',
+            strategy: 'Persistent JSON log aggregated into wallet, action, and day-level analytics.',
+            indexedAt: new Date().toISOString(),
+            latestTxAt: normalized.length ? normalized[normalized.length - 1].timestamp : null,
+        },
+    };
+}
+
 // --- Endpoints ---
 const startTime = Date.now();
 
 // Restore totals from persisted log on startup
 const _log = loadTxLog();
-let totalTransactions = _log.length;
-let totalXlmSponsored = _log.reduce((sum, tx) => sum + (tx.xlmFee || 0), 0);
+const _metrics = buildMetrics(_log);
+let totalTransactions = _metrics.totalTransactions;
+let totalXlmSponsored = Number(_metrics.sponsorSpendTotalXlm);
 
 console.log(`📊 Restored ${totalTransactions} transactions from persistent log`);
 
@@ -108,10 +290,10 @@ app.post('/relay', async (req, res) => {
             return res.status(500).json({ error: "Relayer not configured with SPONSOR_SECRET" });
         }
 
-        const sponsorKeypair = Keypair.fromSecret(SPONSOR_SECRET);
-
         // 1. Rebuild the user's transaction from the XDR
         const userTx = TransactionBuilder.fromXDR(xdr, Networks.TESTNET);
+        const sponsorKeypair = Keypair.fromSecret(SPONSOR_SECRET);
+        const sourcePubKey = resolveAccountId(userTx.source);
 
         // 2. Wrap it in a FeeBumpTransaction
         // Max fee is 10000 stroops (0.001 XLM) to cover inner tx + bump fee.
@@ -130,7 +312,22 @@ app.post('/relay', async (req, res) => {
 
         // 5. Update Developer Analytics
         apiKeysDb[apiKey].transactions += 1;
-        apiKeysDb[apiKey].gasSponsored += 10000;
+        apiKeysDb[apiKey].gasSponsored += FEE_BUMP_MAX_FEE_STROOPS;
+        totalTransactions += 1;
+        totalXlmSponsored = roundXlm(totalXlmSponsored + FEE_BUMP_MAX_FEE_XLM);
+        appendTx({
+            hash: response.hash,
+            pubKey: sourcePubKey,
+            action: 'signed_fee_bump',
+            route: '/relay',
+            transactionType: 'fee_bump',
+            sponsoredFeeXlm: FEE_BUMP_MAX_FEE_XLM,
+            sponsoredAmountXlm: 0,
+            sponsoredTotalXlm: FEE_BUMP_MAX_FEE_XLM,
+            xlmFee: FEE_BUMP_MAX_FEE_XLM,
+            apiKey,
+            timestamp: new Date().toISOString(),
+        });
 
         console.log(`[API Key: ${apiKey}] Successfully relayed transaction! Hash: ${response.hash}`);
         res.json({ success: true, hash: response.hash });
@@ -167,7 +364,7 @@ app.get('/api/stats/:apiKey', (req, res) => {
 // 2.5 Relayer Off-Chain Intent Endpoint (MVP Feature)
 app.post('/relay/intent', async (req, res) => {
     try {
-        const apiKey = req.headers['x-api-key'] || 'sb_test_5kq9v2x8m4j1c0p3';
+        const apiKey = req.headers['x-api-key'] || DEFAULT_API_KEY;
         const { payload, signature, pubKey } = req.body;
 
         if (!payload || !signature || !pubKey) {
@@ -218,19 +415,23 @@ app.post('/relay/intent', async (req, res) => {
         // We execute a real transaction to prove traction. 
         // We will either Create the session account (funding it) or send a tiny Payment.
         let smartWalletOperation;
+        let transactionType = 'payment';
+        let sponsoredAmountXlm = DEFAULT_INTENT_PAYMENT_XLM;
         try {
             await server.loadAccount(pubKey);
             // Account already exists on ledger, send an interactive payment
             smartWalletOperation = Operation.payment({
                 destination: pubKey,
                 asset: Asset.native(),
-                amount: "0.0100000"
+                amount: DEFAULT_INTENT_PAYMENT_XLM.toFixed(7)
             });
         } catch (e) {
             // Account doesn't exist, create it and give it 2.5 XLM!
+            transactionType = 'create_account';
+            sponsoredAmountXlm = DEFAULT_CREATE_ACCOUNT_XLM;
             smartWalletOperation = Operation.createAccount({
                 destination: pubKey,
-                startingBalance: "2.5000000"
+                startingBalance: DEFAULT_CREATE_ACCOUNT_XLM.toFixed(7)
             });
         }
 
@@ -251,17 +452,25 @@ app.post('/relay/intent', async (req, res) => {
         userLimit.count += 1;
         userRateLimits.set(pubKey, userLimit);
         totalTransactions += 1;
-        totalXlmSponsored += 0.000010; // 100 stroops in XLM
+        const sponsoredFeeXlm = DEFAULT_INTENT_FEE_XLM;
+        const sponsoredTotalXlm = roundXlm(sponsoredFeeXlm + sponsoredAmountXlm);
+        totalXlmSponsored = roundXlm(totalXlmSponsored + sponsoredTotalXlm);
         if (apiKeysDb[apiKey]) {
             apiKeysDb[apiKey].transactions += 1;
-            apiKeysDb[apiKey].gasSponsored += 100;
+            apiKeysDb[apiKey].gasSponsored += DEFAULT_INTENT_FEE_STROOPS;
         }
         appendTx({
             hash: response.hash,
             pubKey,
             action: intentData.action || 'unknown',
-            xlmFee: 0.000010,
+            route: '/relay/intent',
+            transactionType,
+            sponsoredAmountXlm,
+            sponsoredFeeXlm,
+            sponsoredTotalXlm,
+            xlmFee: sponsoredFeeXlm,
             apiKey,
+            nonce,
             timestamp: new Date().toISOString(),
         });
 
@@ -276,20 +485,7 @@ app.post('/relay/intent', async (req, res) => {
 
 // Metrics endpoint — indexed transaction data for dashboard & Black Belt requirement
 app.get('/api/metrics', (req, res) => {
-    const log = loadTxLog();
-    const uniqueUsers = new Set(log.map(tx => tx.pubKey)).size;
-    const byDay = {};
-    log.forEach(tx => {
-        const day = tx.timestamp?.slice(0, 10) || 'unknown';
-        byDay[day] = (byDay[day] || 0) + 1;
-    });
-    res.json({
-        totalTransactions: log.length,
-        uniqueUsers,
-        xlmSponsored: log.reduce((s, tx) => s + (tx.xlmFee || 0), 0).toFixed(7),
-        transactionsByDay: byDay,
-        recentTransactions: log.slice(-10).reverse(),
-    });
+    res.json(buildMetrics(loadTxLog()));
 });
 
 // 3. Developer Portal: Mock API Key Generation
