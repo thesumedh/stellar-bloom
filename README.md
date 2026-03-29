@@ -25,7 +25,10 @@
 - [x] **Demo Video / Demo Day Walkthrough** — [Watch Full MVP Walkthrough](https://drive.google.com/file/d/1EOyDeWbsTgUD3Ht0s3330sVuICcn-iFH/view?usp=sharing)
 - [x] **Architecture Document** — [📄 ARCHITECTURE.md](./ARCHITECTURE.md)
 - [x] **Technical Documentation & User Guide** — [📘 docs/USER_GUIDE.md](./docs/USER_GUIDE.md)
-- [ ] **30+ Meaningful Commits** — currently 22 on `main`; [view commit history](https://github.com/thesumedh/stellar-bloom/commits/main)
+- [x] **Operations & Monitoring Runbook** — [🛠️ docs/MONITORING_RUNBOOK.md](./docs/MONITORING_RUNBOOK.md)
+- [x] **Black Belt Evidence Pack** — [📦 docs/BLACK_BELT_EVIDENCE.md](./docs/BLACK_BELT_EVIDENCE.md)
+- [x] **Demo Day Presentation Prepared** — [🎤 docs/DEMO_DAY.md](./docs/DEMO_DAY.md)
+- [x] **30+ Meaningful Commits** — 30 commits on `main`; [view commit history](https://github.com/thesumedh/stellar-bloom/commits/main)
 - [x] **30+ Verified Active Wallet Addresses** — [See below](#-verified-active-wallet-validation)
 - [x] **Metrics Dashboard** — [https://stellar-bloom.onrender.com/api/metrics](https://stellar-bloom.onrender.com/api/metrics)
 - [x] **Monitoring Active** — [https://stellar-bloom.onrender.com/health](https://stellar-bloom.onrender.com/health)
@@ -35,6 +38,19 @@
 - [x] **Advanced Feature Implemented** — Fee Sponsorship using relayer + fee bump support
 - [x] **Data Indexing Implemented** — Live indexed endpoint at [`/api/metrics`](https://stellar-bloom.onrender.com/api/metrics)
 - [x] **Deployed Relayer** — [https://stellar-bloom.onrender.com](https://stellar-bloom.onrender.com)
+
+---
+
+## 📦 Submission Pack
+
+If you want the fastest possible review path, start here:
+
+- **README / main submission narrative** — [README.md](./README.md)
+- **Architecture** — [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **User guide** — [docs/USER_GUIDE.md](./docs/USER_GUIDE.md)
+- **Monitoring runbook** — [docs/MONITORING_RUNBOOK.md](./docs/MONITORING_RUNBOOK.md)
+- **Evidence pack** — [docs/BLACK_BELT_EVIDENCE.md](./docs/BLACK_BELT_EVIDENCE.md)
+- **Demo Day script** — [docs/DEMO_DAY.md](./docs/DEMO_DAY.md)
 
 ---
 
@@ -63,7 +79,7 @@ The following active wallets successfully executed gasless transactions on Stell
 | 2 | `GD4J4B453BCRICFTSFK4AMLM454PLMRUSOTB5JZ5GWC4IJONX5PU7Y62` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/7c33ab4e601e558b5ea50c1cacb68a5280e8e2c09950cc5128d62f92b0a6b401) |
 | 3 | `GBIKQMEDPPUSCXSVSQSE4CF2DXMDX6DEXA2JUNNFYGDAMW4VUB4FP6Y3` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/ec37a7719b4857a12822c7f97442290e545c97f539ba16585ca0c835ea041b10) |
 | 4 | `GBGQV475SQSGULTJTX7VY6HCY64PXPDGNVMZYTSG3K56RRYOJDBACOGR` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/831d2af18c5a2b340076780a148263f71a6ab0be1f54eb551661318969d9c90e) |
-| 5 | `GA2LLTRBJF5UNO6KVOBYIQGC6SW6TYWQZV32HVZ67L73IKCIYQZITNNI` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/ed473895082c0647cf8d439e669a532dd6b1a32239b7b9449d8fb213cfbdb23b) |
+| 5 | `GAGRMCFYSC6NI7AZI42LELS4STJCFTPG7WEAA4SVSNGT6Z3NH3EOX4UN` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/2b2ed737ffa76b91eb40c3e9e68a858e118ccde9b0fe0a3b8362f64d2f839919) |
 | 6 | `GAFYZMK75GAKFOVVU4YBNUWQRDV6OKDI7I6ZSSOBHYUDRXOYBURQJHDC` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/844a5bb2d9093ce74ac060f624f16dc9d52200b62eba1f1fffee865e24817f78) |
 | 7 | `GDSWYJVKOPI5OOFYGZQTG3KSFIF73U5DVKMQUXKSHJFWDK4ZLEVFDY2H` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/2946ee58e80e81c3677f0d94ef0e7f19ed18a9244df96cddcc36d62efe35cf89) |
 | 8 | `GCVDOL6YKPW7LNRQWU3XCTSWUZINRUQAM42FDAXGDTI6OTTG4KZKSSRP` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/ebcf067304b9002dbb2fc07c9c54456a359905bac077f16714347b9aabee0ec9) |
@@ -76,19 +92,19 @@ The following active wallets successfully executed gasless transactions on Stell
 | 15 | `GAMWM6WTUZYC4KQ362O6NYOV422YPRAC43TBUWIOQ6SLOBW5ETQN3LRK` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/9ec5db58672e814eac9cb2349cca11f647ae6b37ddfac03672970787a534d543) |
 | 16 | `GDOARCXWEAHPKS4P3WY2W2PZE6YLXYBXX7MWV7QVT2FCDC6PRDHNKJUD` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/466b74e5b0db7ceb7b2708a76f9310ffc1893e9855343f0817cdad93c0c2fe99) |
 | 17 | `GC3556RRT63FCDULEDZCMUL5YE2MHH5OH4GBLG6P5TPRWI2L4D4TLQJN` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/ebccc91a4102f6f35de782c26b44b34ef96441efe81029041ba0f0ce8ed154e4) |
-| 18 | `GALGC3Z7BBPIIDGWHL3JOSFB3KBCJGIPXFZW33T7QTE47JHB3WX5HWVH` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/911d346707ca4cb6db3fe13e3d29fc7468e56f6783b076380a4f9e74eacaac4c) |
-| 19 | `GCA4F6ASOQO4IL53P7EHVCMWKOTRX3SGT2GVVGTHHVHBKDZOSQUIIOOB` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/50c6692f13c5b92daaa18237f693fc2c08953ea97186af7a964fd0ca32ce85d4) |
-| 20 | `GAMWCP3KLSPCVFA63SXXQU6JMRWW7GQV4TJGCTNDZMKZ77445VHMQVUJ` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/c340a32331b89b999f4bde282f18006624f8c0fd7e9cab083e343706b6141f69) |
-| 21 | `GDKGTR2B2TOBJDYCBFS2TNZO2YEDBNXNTMP3KQMJ7J5O4AI7XJXS7CJU` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/b09dce81f96146e2006ca3613dcff9e3ae12edbdc3f19497d3cf4e597858fb39) |
-| 22 | `GCMKZMLSYBVZT7XQYRISFMF5AN4VI3XFSPNBRGOTLNNHE47AGAGPVEAO` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/8170e97e2e464585115b1c79ea409f6204cfea6a6f549dc371ae1ba278f185e7) |
-| 23 | `GAYU66UUT6KMRXNR5PNZTGIVRILQ3HGN5PZA6HUBHG2ZOP64NL574UD6` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/316079ba6b625ef7d494287c73bd36a0be5aa839dd1d884bc107bd94f1f3f932) |
-| 24 | `GD5Q2RFWJDV6RYORBNJ4FB27NYGPY5INUWSVDN6LT4V4IHQ6EAIPLY6S` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/4cdcb4641ea0da6b75ab6fc199790cabb84c70454da31ad5bd112fcdc51de496) |
-| 25 | `GDJDGT3DZMU6E5S7UPQQR4Q5OIWUNPR2QNDR7ZLKFHAWOMR5I6FCYLIE` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/4be1d39e10d842983169f1a7e2491f765cc7e7b5b18028c25c9fa03ba64e81be) |
-| 26 | `GBPSIJ6J5UAOEVT3ILDHHHMOEDG3MBAQTRMEI3ZMHISZGQ5R74PET7TC` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/47c8bd0b04adaaf32dd6d2fb0247f75c1e0e29da2665647990e5cc3706352b28) |
-| 27 | `GC3TX2ZJMBK3FCR7OAQLOJOINJJZK465LU24CIQ6LWRWLEJCS4UU326X` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/019ac27943b0f88213237154e709317919b0fc6fe0f561e8fbb59b768b1603c3) |
-| 28 | `GAKUDZDUNFDUENEHM6K4DICD2IVCBNC6S56BZ7DSJB4DGII2EIXN4DLV` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/ea2841b81c9e4f39f9c7fc46c773370717529a9c931a0e76f362fd82f995f691) |
-| 29 | `GDPWCRMVUO7Z4BR5KIJZF5LBOVTOPQJIDYJ56PKHF3E3ZO2Y3QXMQ2HW` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/905c3bdc5819619c2c638ee09c25c968befba44eb679692392c1fe644d80cbd6) |
-| 30 | `GAGRMCFYSC6NI7AZI42LELS4STJCFTPG7WEAA4SVSNGT6Z3NH3EOX4UN` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/2b2ed737ffa76b91eb40c3e9e68a858e118ccde9b0fe0a3b8362f64d2f839919) |
+| 18 | `GA2LLTRBJF5UNO6KVOBYIQGC6SW6TYWQZV32HVZ67L73IKCIYQZITNNI` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/ed473895082c0647cf8d439e669a532dd6b1a32239b7b9449d8fb213cfbdb23b) |
+| 19 | `GALGC3Z7BBPIIDGWHL3JOSFB3KBCJGIPXFZW33T7QTE47JHB3WX5HWVH` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/911d346707ca4cb6db3fe13e3d29fc7468e56f6783b076380a4f9e74eacaac4c) |
+| 20 | `GCA4F6ASOQO4IL53P7EHVCMWKOTRX3SGT2GVVGTHHVHBKDZOSQUIIOOB` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/50c6692f13c5b92daaa18237f693fc2c08953ea97186af7a964fd0ca32ce85d4) |
+| 21 | `GAMWCP3KLSPCVFA63SXXQU6JMRWW7GQV4TJGCTNDZMKZ77445VHMQVUJ` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/c340a32331b89b999f4bde282f18006624f8c0fd7e9cab083e343706b6141f69) |
+| 22 | `GDKGTR2B2TOBJDYCBFS2TNZO2YEDBNXNTMP3KQMJ7J5O4AI7XJXS7CJU` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/b09dce81f96146e2006ca3613dcff9e3ae12edbdc3f19497d3cf4e597858fb39) |
+| 23 | `GCMKZMLSYBVZT7XQYRISFMF5AN4VI3XFSPNBRGOTLNNHE47AGAGPVEAO` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/8170e97e2e464585115b1c79ea409f6204cfea6a6f549dc371ae1ba278f185e7) |
+| 24 | `GAYU66UUT6KMRXNR5PNZTGIVRILQ3HGN5PZA6HUBHG2ZOP64NL574UD6` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/316079ba6b625ef7d494287c73bd36a0be5aa839dd1d884bc107bd94f1f3f932) |
+| 25 | `GD5Q2RFWJDV6RYORBNJ4FB27NYGPY5INUWSVDN6LT4V4IHQ6EAIPLY6S` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/4cdcb4641ea0da6b75ab6fc199790cabb84c70454da31ad5bd112fcdc51de496) |
+| 26 | `GDJDGT3DZMU6E5S7UPQQR4Q5OIWUNPR2QNDR7ZLKFHAWOMR5I6FCYLIE` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/4be1d39e10d842983169f1a7e2491f765cc7e7b5b18028c25c9fa03ba64e81be) |
+| 27 | `GBPSIJ6J5UAOEVT3ILDHHHMOEDG3MBAQTRMEI3ZMHISZGQ5R74PET7TC` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/47c8bd0b04adaaf32dd6d2fb0247f75c1e0e29da2665647990e5cc3706352b28) |
+| 28 | `GC3TX2ZJMBK3FCR7OAQLOJOINJJZK465LU24CIQ6LWRWLEJCS4UU326X` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/019ac27943b0f88213237154e709317919b0fc6fe0f561e8fbb59b768b1603c3) |
+| 29 | `GAKUDZDUNFDUENEHM6K4DICD2IVCBNC6S56BZ7DSJB4DGII2EIXN4DLV` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/ea2841b81c9e4f39f9c7fc46c773370717529a9c931a0e76f362fd82f995f691) |
+| 30 | `GDPWCRMVUO7Z4BR5KIJZF5LBOVTOPQJIDYJ56PKHF3E3ZO2Y3QXMQ2HW` | [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/905c3bdc5819619c2c638ee09c25c968befba44eb679692392c1fe644d80cbd6) |
 
 > **Example verified transaction:** [View on Stellar Expert](https://stellar.expert/explorer/testnet/tx/5b2309947c32d73d0f7ef42f7233bb62bc143822f8be412f226a406e2583310e)
 
@@ -112,6 +128,7 @@ Production monitoring is active for the deployed relayer:
 - **Health Endpoint:** [https://stellar-bloom.onrender.com/health](https://stellar-bloom.onrender.com/health)
 - **Live Relayer Status:** surfaced inside the frontend dashboard with uptime and transaction totals
 - **Deployment Target:** Render-hosted relayer with live status checks and persistent transaction logging
+- **Operations Runbook:** [docs/MONITORING_RUNBOOK.md](./docs/MONITORING_RUNBOOK.md)
 
 ---
 
@@ -123,6 +140,7 @@ User feedback was collected via Google Forms and exported into an Excel sheet fo
 - **Feedback Sheet:** [Excel Sheet](https://docs.google.com/spreadsheets/d/1x-nKPFXncRoAWsnBm-nD1jnAIvL4t0SDZy8TGKOTJ7M/edit?usp=sharing)
 - **Key Finding:** Users found the 1-click flow intuitive with zero blockchain knowledge required
 - **Iteration Implemented:** Added real-time stage tracker ("Generating wallet → Signing → Sponsoring gas → Confirmed") based on feedback that users wanted to see what was happening behind the scenes
+- **Evidence Summary:** [docs/BLACK_BELT_EVIDENCE.md](./docs/BLACK_BELT_EVIDENCE.md)
 
 ### Next Phase Improvements Based on Feedback
 

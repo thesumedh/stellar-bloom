@@ -53,8 +53,10 @@ This document outlines all security measures implemented in StellarBloom's gasle
 
 ## Verification
 
-All cryptographic controls can be independently verified:
-- **Signature verification code:** [`relayer/index.js` line 164](./relayer/index.js)
-- **Nonce replay protection:** [`relayer/index.js` line 176](./relayer/index.js)
-- **Rate limiting config:** [`relayer/index.js` line 19](./relayer/index.js)
-- **Key generation (client):** [`stellar-bloom/src/lib/bloom-sdk.ts` line 10](./stellar-bloom/src/lib/bloom-sdk.ts)
+All cryptographic and operational controls can be independently verified in the repository:
+
+- **Intent verification and replay protection:** [`relayer/index.js`](./relayer/index.js)
+- **Persistent transaction logging and metrics indexing:** [`relayer/index.js`](./relayer/index.js)
+- **Walletless key generation and local signing:** [`stellar-bloom/src/lib/bloom-sdk.ts`](./stellar-bloom/src/lib/bloom-sdk.ts)
+- **Wallet-signed fee bump relay path:** [`stellar-bloom/src/stellar/stellar.ts`](./stellar-bloom/src/stellar/stellar.ts)
+- **Level 6 proof export pipeline:** [`relayer/export-proof.mjs`](./relayer/export-proof.mjs)

@@ -34,7 +34,7 @@ StellarBloom eliminates all of that. You just **click a button**.
 - Fee paid by you: **$0.00**
 - A link to verify your transaction on **Stellar Expert** (the block explorer)
 
-That's it. A real blockchain transaction executed in ~18 seconds with zero setup.
+That's it. A real Stellar Testnet transaction executed with zero setup.
 
 ---
 
@@ -47,7 +47,7 @@ If you have a **Freighter** wallet installed:
 3. Your real `G...` address now shows in the nav bar
 4. Future transactions link to your real identity instead of a temporary key
 
-> **Note:** Connecting your wallet is for **identity only** — you still pay $0.00 in gas fees. StellarBloom's relayer always covers the fee.
+> **Note:** Connecting your wallet is for **identity only** — you still pay $0.00 in gas fees. StellarBloom's relayer covers the fee for the hosted testnet experience.
 
 ---
 
@@ -100,6 +100,14 @@ https://stellar.expert/explorer/testnet/tx/${result.hash}
 | `/api/stats/:key` | GET | None | Usage analytics for an API key |
 | `/api/keys/generate` | POST | None | Generate a new API key |
 
+### Hosted Demo Surfaces
+
+| Surface | URL |
+|---|---|
+| Frontend | [https://stellar-bloom.vercel.app](https://stellar-bloom.vercel.app) |
+| Relayer health | [https://stellar-bloom.onrender.com/health](https://stellar-bloom.onrender.com/health) |
+| Metrics | [https://stellar-bloom.onrender.com/api/metrics](https://stellar-bloom.onrender.com/api/metrics) |
+
 ### Intent Payload Schema
 
 ```json
@@ -118,7 +126,7 @@ https://stellar.expert/explorer/testnet/tx/${result.hash}
 Every transaction is a genuine Stellar Testnet transaction. The hash is verifiable on Stellar Expert.
 
 **Q: Who pays the gas fee?**
-StellarBloom's Relayer holds a "Gas Tank" funded by the developer. It wraps your action in a FeeBump transaction, paying the 100-stroop base fee (~$0.000001).
+StellarBloom's relayer pays the fee in the hosted testnet flow. In walletless mode it submits sponsored actions on the user's behalf, and in wallet-connected mode it can relay a signed XDR through a fee bump transaction.
 
 **Q: What happens to my temporary wallet?**
 The ephemeral keypair exists only in browser memory for the duration of the transaction. It is never stored anywhere.
@@ -126,5 +134,5 @@ The ephemeral keypair exists only in browser memory for the duration of the tran
 **Q: Can I lose money?**
 No. StellarBloom runs on Stellar Testnet where all XLM is free and has no real-world value.
 
-**Q: When will the hosted API be available?**
-We are building a managed version where developers get an API key without running their own relayer. Star the [GitHub repo](https://github.com/thesumedh/stellar-bloom) to get notified.
+**Q: Where can I see monitoring and proof data?**
+Use the live health endpoint, the indexed metrics endpoint, and the exported wallet-proof files linked from the main [README](../README.md).
