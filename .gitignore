@@ -3,3 +3,6 @@ dist/
 .env
 .DS_Store
 build/
+contracts/target/
+contracts/target_test/
+stellar-bloom/.env.local
