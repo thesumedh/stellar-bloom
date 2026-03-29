@@ -6,6 +6,12 @@ import { Horizon, TransactionBuilder, Networks, Contract, xdr, Address, Asset, r
 
 const server = new Horizon.Server("https://horizon-testnet.stellar.org");
 const rpcServer = new rpc.Server("https://soroban-testnet.stellar.org");
+const RELAYER_BASE_URL = (import.meta.env.VITE_RELAYER_URL || 'http://localhost:3000').replace(/\/$/, '');
+const RELAYER_API_KEY = import.meta.env.VITE_RELAYER_API_KEY || 'sb_test_5kq9v2x8m4j1c0p3';
+
+function isNotFoundError(error: unknown): error is { response?: { status?: number } } {
+    return typeof error === 'object' && error !== null;
+}
 
 StellarWalletsKit.init({
     network: KitNetworks.TESTNET,
@@ -25,10 +31,10 @@ export async function connectWallet(): Promise<string> {
 export async function fetchBalance(pubKey: string): Promise<string> {
     try {
         const account = await server.loadAccount(pubKey);
-        const nativeBalance = account.balances.find((b: any) => b.asset_type === 'native');
-        return nativeBalance ? nativeBalance.balance : '0';
-    } catch (error: any) {
-        if (error?.response?.status === 404) {
+        const nativeBalance = account.balances.find((balance) => balance.asset_type === 'native');
+        return nativeBalance?.balance || '0';
+    } catch (error: unknown) {
+        if (isNotFoundError(error) && error.response?.status === 404) {
             return "0"; // Account not funded on testnet yet
         }
         throw error;
@@ -70,7 +76,7 @@ export async function sendXlm(sender: string, receiver: string, amount: string, 
         .build();
 
     // Soroban transactions MUST be prepared (simulated + assembled) to generate auth and footprints
-    tx = await rpcServer.prepareTransaction(tx) as any;
+    tx = await rpcServer.prepareTransaction(tx);
     
     // Note: prepareTransaction returns a Transaction. We need to cast it or just use it.
     const txXdr = tx.toXDR();
@@ -85,10 +91,10 @@ export async function sendXlm(sender: string, receiver: string, amount: string, 
         throw new Error("Failed to sign transaction or action was rejected.");
     }
 
-    const relayApiKey = apiKey || 'sb_test_5kq9v2x8m4j1c0p3';
+    const relayApiKey = apiKey || RELAYER_API_KEY;
 
     // Instead of submitting to network, POST to relayer!
-    const relayResponse = await fetch('http://localhost:3000/relay', {
+    const relayResponse = await fetch(`${RELAYER_BASE_URL}/relay`, {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',

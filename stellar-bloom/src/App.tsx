@@ -5,28 +5,106 @@ import './App.css';
 
 const RELAYER_URL = import.meta.env.VITE_RELAYER_URL || 'http://localhost:3000';
 const sleep = (ms: number) => new Promise(r => setTimeout(r, ms));
-type CoffeeStage = 'idle' | 'generating' | 'signing' | 'relaying' | 'success' | 'error';
+type Stage = 'idle' | 'generating' | 'signing' | 'relaying' | 'success' | 'error';
+type CoffeeStage = Stage; // alias kept for compatibility
+
+const DEMOS = [
+  { id: 'claim_coffee',  emoji: '☕', label: 'Coffee Shop',    desc: 'Claim a free coffee — no wallet needed',         badge: 'Food & Drink' },
+  { id: 'claim_ticket',  emoji: '🎟️', label: 'Event Ticket',   desc: 'Reserve your festival ticket instantly',          badge: 'Events' },
+  { id: 'unlock_item',   emoji: '🎮', label: 'Game Item',       desc: 'Unlock an in-game item without gas fees',         badge: 'Gaming' },
+] as const;
+type DemoId = typeof DEMOS[number]['id'];
+
+interface RecentTransaction {
+  hash: string;
+  pubKey: string;
+  action: string;
+  timestamp: string;
+  transactionType?: string;
+  sponsoredTotalXlm?: number;
+  explorerUrl?: string | null;
+}
+
+interface TopWallet {
+  pubKey: string;
+  txCount: number;
+  firstSeen: string;
+  lastSeen: string;
+  dayCount: number;
+  actions: string[];
+  totalSponsoredXlm: number;
+  explorerUrl: string | null;
+}
 
 interface MetricsData {
   totalTransactions: number;
   uniqueUsers: number;
+  repeatUsers: number;
+  powerUsers: number;
+  multiDayUsers: number;
+  activeToday: number;
+  activeLast7Days: number;
+  avgTransactionsPerUser: number;
+  repeatUserRatePct: number;
   xlmSponsored: string;
+  sponsoredFeeXlm: string;
+  sponsoredValueXlm: string;
+  sponsorSpendTotalXlm: string;
   transactionsByDay: Record<string, number>;
-  recentTransactions: Array<{ hash: string; pubKey: string; action: string; timestamp: string }>;
+  dailyActiveUsers: Record<string, number>;
+  transactionsByAction: Record<string, number>;
+  transactionsByType: Record<string, number>;
+  topWallets: TopWallet[];
+  recentTransactions: RecentTransaction[];
+  goalProgress: {
+    targetWallets: number;
+    currentWallets: number;
+    currentTransactions: number;
+    walletGoalMet: boolean;
+  };
+  indexing: {
+    source: string;
+    endpoint: string;
+    strategy: string;
+    indexedAt: string;
+    latestTxAt: string | null;
+  };
 }
 
+function CopyBlock({ code }: { code: string }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <div className="code-block" style={{position:'relative'}}>
+      <button className={`copy-btn ${copied ? 'copied' : ''}`} onClick={handleCopy}>
+        {copied ? '✓ Copied!' : 'Copy'}
+      </button>
+      <pre>{code}</pre>
+    </div>
+  );
+}
+
+
 function App() {
-  const [activeTab, setActiveTab] = useState<'demo' | 'docs'>('demo');
+  const [activeTab, setActiveTab] = useState<'demo' | 'docs' | 'feedback'>('demo');
 
   // ── Wallet Session ──
   const [walletPubKey, setWalletPubKey] = useState<string | null>(null);
   const [walletConnecting, setWalletConnecting] = useState(false);
 
-  // ── Coffee Demo ──
+  // ── Demo ──
+  const [demoType, setDemoType] = useState<DemoId>('claim_coffee');
   const [coffeeStage, setCoffeeStage] = useState<CoffeeStage>('idle');
   const [coffeeTxHash, setCoffeeTxHash] = useState<string | null>(null);
   const [coffeeUserKey, setCoffeeUserKey] = useState<string | null>(null);
   const [coffeeError, setCoffeeError] = useState<string | null>(null);
+
+  // ── Live TX Feed ──
+  const [liveFeed, setLiveFeed] = useState<RecentTransaction[]>([]);
 
   // ── Relayer Health ──
   const [relayerOnline, setRelayerOnline] = useState<boolean | null>(null);
@@ -44,9 +122,8 @@ function App() {
     });
   }, []);
 
-  // Poll relayer health when on docs tab
+  // Poll relayer health + live feed
   useEffect(() => {
-    if (activeTab !== 'docs') return;
     const poll = async () => {
       try {
         const res = await fetch(`${RELAYER_URL}/health`);
@@ -54,17 +131,17 @@ function App() {
         setRelayerOnline(d.status === 'ok');
         setRelayerStats({ totalTransactions: d.totalTransactions ?? 0, xlmSponsored: d.xlmSponsored ?? '0.0000', uptime: d.uptime ?? 'N/A' });
       } catch { setRelayerOnline(false); }
-      // Also fetch full metrics
       try {
         const r2 = await fetch(`${RELAYER_URL}/api/metrics`);
         const m = await r2.json();
         setMetrics(m);
+        if (m.recentTransactions) setLiveFeed(m.recentTransactions.slice(0, 8));
       } catch { /* metrics optional */ }
     };
     poll();
     const id = setInterval(poll, 5000);
     return () => clearInterval(id);
-  }, [activeTab]);
+  }, []);
 
   // Connect Freighter wallet
   const connectWallet = async () => {
@@ -81,7 +158,7 @@ function App() {
 
   const disconnectWallet = () => setWalletPubKey(null);
 
-  // Claim coffee
+  // Generalized demo claim
   const handleClaim = async () => {
     setCoffeeStage('generating');
     setCoffeeError(null);
@@ -90,13 +167,13 @@ function App() {
     try {
       await sleep(700); setCoffeeStage('signing');
       await sleep(600); setCoffeeStage('relaying');
-      const result = await executeGasless('claim_coffee');
+      const result = await executeGasless(demoType);
       setCoffeeTxHash(result.hash || null);
-      // If wallet connected use their real key, otherwise show ephemeral
       setCoffeeUserKey(walletPubKey || result.userPubKey || null);
       setCoffeeStage('success');
-    } catch (err: any) {
-      setCoffeeError(err.message || 'Relayer unreachable. Is it running?');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Relayer unreachable. Try again.';
+      setCoffeeError(message);
       setCoffeeStage('error');
     }
   };
@@ -113,6 +190,7 @@ function App() {
         <div className="nav-links">
           <button className={`nav-link ${activeTab === 'demo' ? 'active' : ''}`} onClick={() => setActiveTab('demo')}>Live Demo</button>
           <button className={`nav-link ${activeTab === 'docs' ? 'active' : ''}`} onClick={() => setActiveTab('docs')}>Developer Docs</button>
+          <button className={`nav-link ${activeTab === 'feedback' ? 'active' : ''}`} onClick={() => setActiveTab('feedback')}>Feedback</button>
         </div>
 
         <div className="nav-actions">
@@ -137,8 +215,8 @@ function App() {
           <h1>Web3 apps that feel<br />like Web2.</h1>
 
           <p className="hero-sub">
-            StellarBloom lets users interact with Soroban apps without wallets, seed phrases, or gas fees.
-            One click. Real transaction. Zero friction.
+            StellarBloom lets users complete a Stellar-powered action without handling wallets, seed phrases, or gas fees themselves.
+            One click generates a session key, signs the intent locally, and the relayer submits a real sponsored transaction.
           </p>
 
           <div className="hero-cta-group">
@@ -166,8 +244,8 @@ function App() {
             </div>
             <div className="glass-panel prop-card">
               <div className="prop-icon">⚡</div>
-              <h3>Relayer-Sponsored Gas</h3>
-              <p>Developers fund a Gas Tank. StellarBloom wraps every intent as a FeeBump — fractions of a cent per tx.</p>
+              <h3>Relayer-Sponsored Actions</h3>
+              <p>Developers fund the relayer. Session onboarding is sponsored automatically, and the advanced `/relay` API also supports fee-bumped signed XDRs.</p>
             </div>
             <div className="glass-panel prop-card">
               <div className="prop-icon">🔐</div>
@@ -185,6 +263,42 @@ function App() {
               <p>No setup. No wallet needed. One click executes a real Stellar transaction.</p>
             </div>
 
+            {/* Demo Selector */}
+            <div className="demo-selector">
+              {DEMOS.map(d => (
+                <button
+                  key={d.id}
+                  className={`demo-selector-card ${demoType === d.id ? 'selected' : ''}`}
+                  onClick={() => { setDemoType(d.id); setCoffeeStage('idle'); }}
+                  disabled={['generating','signing','relaying'].includes(coffeeStage)}
+                >
+                  <span className="demo-selector-emoji">{d.emoji}</span>
+                  <span className="demo-selector-label">{d.label}</span>
+                  <span className="demo-selector-badge">{d.badge}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Live TX Feed */}
+            {liveFeed.length > 0 && (
+              <div className="live-feed">
+                <div className="live-feed-header">
+                  <span className="live-dot" />
+                  <span style={{fontSize:'0.75rem', fontWeight:600, color:'#a78bfa', textTransform:'uppercase', letterSpacing:'0.8px'}}>Live Transactions</span>
+                </div>
+                <div className="live-feed-scroll">
+                  {liveFeed.map((tx, i) => (
+                    <div key={i} className="live-feed-item">
+                      <span className="live-feed-action">{tx.action?.replace(/_/g,' ')}</span>
+                      <code className="live-feed-key">{tx.pubKey?.slice(0,6)}…{tx.pubKey?.slice(-4)}</code>
+                      <a href={`https://stellar.expert/explorer/testnet/tx/${tx.hash}`} target="_blank" rel="noreferrer" className="live-feed-hash">{tx.hash?.slice(0,8)}↗</a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+
             <div className="demo-card-wrapper">
               {/* Wallet session banner */}
               {walletPubKey && coffeeStage === 'idle' && (
@@ -200,11 +314,11 @@ function App() {
 
               <div className="glass-panel payment-card" style={{ border: '1px solid rgba(124,58,237,0.3)' }}>
                 <div className="card-header">
-                  <h2>☕ Coffee Shop Demo</h2>
+                  <h2>{DEMOS.find(x => x.id === demoType)?.emoji} {DEMOS.find(x => x.id === demoType)?.label}</h2>
                   <span className="badge">Live · Testnet</span>
                 </div>
                 <p className="text-muted mb-4" style={{ fontSize: '0.88rem', lineHeight: 1.6 }}>
-                  You're a first-time user who has never heard of crypto. Click the button below.
+                  {DEMOS.find(x => x.id === demoType)?.desc}. Zero crypto experience needed.
                 </p>
 
                 {/* CTA Button */}
@@ -215,7 +329,7 @@ function App() {
                     onClick={handleClaim}
                     disabled={isLoading}
                   >
-                    {coffeeStage === 'idle'       && '☕  Claim Free Coffee'}
+                        {coffeeStage === 'idle'       && `${DEMOS.find(x => x.id ===demoType)?.emoji}  Claim Now`}
                     {coffeeStage === 'generating' && '⚙️  Generating wallet...'}
                     {coffeeStage === 'signing'    && '✍️  Signing locally...'}
                     {coffeeStage === 'relaying'   && '🚀  Sponsoring gas fee...'}
@@ -286,8 +400,8 @@ function App() {
                 <ol>
                   <li>A temporary Ed25519 keypair is generated in your browser</li>
                   <li>Your intent is signed locally — private key never leaves your device</li>
-                  <li>StellarBloom Relayer wraps it in a FeeBump transaction and pays the fee</li>
-                  <li>Transaction lands on Stellar Testnet — permanent and verifiable</li>
+                  <li>StellarBloom Relayer verifies the intent, creates or funds the session account, and pays the sponsor cost</li>
+                  <li>The resulting transaction lands on Stellar Testnet and is verifiable on Stellar Expert</li>
                 </ol>
               </div>
             </div>
@@ -299,7 +413,7 @@ function App() {
           <section className="dashboard-section fade-in">
             <div className="demo-header">
               <h2>Developer Docs</h2>
-              <p>Integrate gasless transactions into your Soroban app in minutes.</p>
+              <p>Integrate sponsored onboarding into your Soroban or Stellar app in minutes.</p>
             </div>
 
             {/* Relayer health */}
@@ -342,17 +456,57 @@ function App() {
                   </div>
                   <div className="metrics-kpi">
                     <div className="metrics-kpi-value">{metrics.uniqueUsers}</div>
-                    <div className="metrics-kpi-label">Unique Users</div>
+                    <div className="metrics-kpi-label">Unique Wallets</div>
                   </div>
                   <div className="metrics-kpi">
-                    <div className="metrics-kpi-value">{parseFloat(metrics.xlmSponsored).toFixed(4)}</div>
-                    <div className="metrics-kpi-label">XLM Sponsored</div>
+                    <div className="metrics-kpi-value">{metrics.repeatUsers}</div>
+                    <div className="metrics-kpi-label">Repeat Wallets</div>
                   </div>
                   <div className="metrics-kpi">
-                    <div className="metrics-kpi-value" style={{fontSize:'1.1rem'}}>
-                      {metrics.totalTransactions > 0 ? (parseFloat(metrics.xlmSponsored) / metrics.uniqueUsers).toFixed(5) : '0'}
+                    <div className="metrics-kpi-value">{metrics.activeLast7Days}</div>
+                    <div className="metrics-kpi-label">Active 7D Wallets</div>
+                  </div>
+                </div>
+
+                <div className="metrics-kpi-row compact">
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value">{metrics.powerUsers}</div>
+                    <div className="metrics-kpi-label">3+ Tx Wallets</div>
+                  </div>
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value">{metrics.activeToday}</div>
+                    <div className="metrics-kpi-label">Active Today</div>
+                  </div>
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value">{metrics.repeatUserRatePct}%</div>
+                    <div className="metrics-kpi-label">Repeat Rate</div>
+                  </div>
+                  <div className="metrics-kpi">
+                    <div className="metrics-kpi-value">{metrics.avgTransactionsPerUser}</div>
+                    <div className="metrics-kpi-label">Avg Tx / Wallet</div>
+                  </div>
+                </div>
+
+                <div className="metrics-detail-grid">
+                  <div className="metrics-detail-card">
+                    <p className="metrics-detail-label">Sponsorship Breakdown</p>
+                    <div className="metrics-inline-list">
+                      <span><strong>{parseFloat(metrics.sponsorSpendTotalXlm).toFixed(4)} XLM</strong> total sponsor spend</span>
+                      <span><strong>{parseFloat(metrics.sponsoredValueXlm).toFixed(4)} XLM</strong> value transferred</span>
+                      <span><strong>{parseFloat(metrics.sponsoredFeeXlm).toFixed(4)} XLM</strong> protocol fees</span>
                     </div>
-                    <div className="metrics-kpi-label">Avg XLM / User</div>
+                  </div>
+                  <div className="metrics-detail-card">
+                    <p className="metrics-detail-label">Black Belt Goal</p>
+                    <div className="goal-progress-row">
+                      <strong>{metrics.goalProgress.currentWallets}/{metrics.goalProgress.targetWallets}</strong>
+                      <span className={`goal-pill ${metrics.goalProgress.walletGoalMet ? 'done' : ''}`}>
+                        {metrics.goalProgress.walletGoalMet ? '30+ wallets reached' : 'Still scaling'}
+                      </span>
+                    </div>
+                    <p className="text-muted" style={{fontSize:'0.78rem'}}>
+                      Indexed directly from the persistent relayer log, so README proof and dashboard numbers come from the same source.
+                    </p>
                   </div>
                 </div>
 
@@ -372,6 +526,22 @@ function App() {
                   </div>
                 )}
 
+                {Object.keys(metrics.transactionsByAction).length > 0 && (
+                  <div style={{marginTop:'22px'}}>
+                    <p style={{fontSize:'0.78rem', color:'#6b7280', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'10px'}}>Action Mix</p>
+                    <div className="metrics-chip-list">
+                      {Object.entries(metrics.transactionsByAction)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([action, count]) => (
+                          <div key={action} className="metrics-chip">
+                            <span>{action.replace(/_/g, ' ')}</span>
+                            <strong>{count}</strong>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Recent txs */}
                 {metrics.recentTransactions.length > 0 && (
                   <div style={{marginTop:'20px'}}>
@@ -380,7 +550,7 @@ function App() {
                       {metrics.recentTransactions.slice(0, 5).map((tx, i) => (
                         <div key={i} className="metrics-tx-row">
                           <code style={{color:'#a78bfa', fontSize:'0.75rem'}}>{tx.pubKey?.slice(0,8)}...{tx.pubKey?.slice(-4)}</code>
-                          <span style={{color:'#6b7280', fontSize:'0.75rem'}}>{tx.action}</span>
+                          <span style={{color:'#6b7280', fontSize:'0.75rem'}}>{tx.action} · {tx.transactionType}</span>
                           <a href={`https://stellar.expert/explorer/testnet/tx/${tx.hash}`} target="_blank" rel="noreferrer" style={{fontSize:'0.72rem', color:'#7c3aed', textDecoration:'underline'}}>
                             {tx.hash?.slice(0,10)}... ↗
                           </a>
@@ -390,6 +560,45 @@ function App() {
                     </div>
                   </div>
                 )}
+
+                {metrics.topWallets.length > 0 && (
+                  <div style={{marginTop:'22px'}}>
+                    <p style={{fontSize:'0.78rem', color:'#6b7280', fontWeight:600, textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'10px'}}>Most Active Wallets</p>
+                    <div className="metrics-wallet-list">
+                      {metrics.topWallets.map((wallet) => (
+                        <div key={wallet.pubKey} className="metrics-wallet-row">
+                          <div>
+                            <code>{wallet.pubKey.slice(0, 10)}...{wallet.pubKey.slice(-4)}</code>
+                            <div className="metrics-wallet-meta">{wallet.actions.join(', ')}</div>
+                          </div>
+                          <div className="metrics-wallet-stats">
+                            <span>{wallet.txCount} tx</span>
+                            <span>{wallet.dayCount} day(s)</span>
+                          </div>
+                          {wallet.explorerUrl && (
+                            <a href={wallet.explorerUrl} target="_blank" rel="noreferrer">Explorer ↗</a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="indexing-grid">
+                  <div className="indexing-card">
+                    <p className="metrics-detail-label">Data Indexing</p>
+                    <p className="text-muted" style={{fontSize:'0.82rem'}}>
+                      <code>{metrics.indexing.source}</code> is aggregated into wallet, action, and daily activity views, then exposed at <code>{metrics.indexing.endpoint}</code> for the live dashboard and README proof table.
+                    </p>
+                  </div>
+                  <div className="indexing-card">
+                    <p className="metrics-detail-label">Index Metadata</p>
+                    <div className="metrics-inline-list">
+                      <span><strong>Strategy:</strong> {metrics.indexing.strategy}</span>
+                      <span><strong>Latest tx:</strong> {metrics.indexing.latestTxAt ? new Date(metrics.indexing.latestTxAt).toLocaleString() : 'No data yet'}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 
@@ -401,13 +610,11 @@ function App() {
                   <h3 style={{margin:0}}>Run the Relayer</h3>
                 </div>
                 <p className="text-muted mb-4" style={{fontSize:'0.85rem'}}>Clone and start the Node.js relayer with your funded testnet key.</p>
-                <div className="code-block">
-                  <pre>{`git clone https://github.com/thesumedh/stellar-bloom
+                <CopyBlock code={`git clone https://github.com/thesumedh/stellar-bloom
 cd stellar-bloom/relayer
 cp .env.example .env   # add SPONSOR_SECRET
 npm install && node index.js
-# → 🚀 Relayer running on :3000`}</pre>
-                </div>
+# → 🚀 Relayer running on :3000`} />
               </div>
 
               <div className="glass-panel dashboard-card">
@@ -416,15 +623,13 @@ npm install && node index.js
                   <h3 style={{margin:0}}>Send a Gasless Intent</h3>
                 </div>
                 <p className="text-muted mb-4" style={{fontSize:'0.85rem'}}>Sign an intent and POST it — the Relayer sponsors the gas automatically.</p>
-                <div className="code-block">
-                  <pre>{`import { executeGasless } from './bloom-sdk';
+                <CopyBlock code={`import { executeGasless } from './bloom-sdk';
 
 const result = await executeGasless('your_action');
 // { success: true, hash: 'abc...', userPubKey: 'G...' }
 
 // Verifiable on-chain:
-// stellar.expert/explorer/testnet/tx/\${result.hash}`}</pre>
-                </div>
+// stellar.expert/explorer/testnet/tx/\${result.hash}`} />
               </div>
 
               {/* Coming Soon */}
@@ -447,6 +652,39 @@ const result = await executeGasless('your_action');
                   ⭐ Star on GitHub · Get Notified
                 </button>
               </div>
+            </div>
+          </section>
+        )}
+
+        {/* ── FEEDBACK ── */}
+        {activeTab === 'feedback' && (
+          <section className="dashboard-section fade-in">
+            <div className="demo-header">
+              <h2>Share Your Feedback</h2>
+              <p>Help us improve StellarBloom. Your feedback directly shapes the next release.</p>
+            </div>
+            <div className="glass-panel feedback-panel">
+              <div className="feedback-top">
+                <div>
+                  <h3 style={{marginBottom:'6px'}}>📝 User Feedback Form</h3>
+                  <p className="text-muted" style={{fontSize:'0.82rem'}}>Takes ~60 seconds. Anonymous responses welcome.</p>
+                </div>
+                <a href="https://forms.gle/Y3TjqYbCK1m6Ch629" target="_blank" rel="noreferrer" className="btn-secondary" style={{fontSize:'0.82rem', padding:'8px 16px'}}>
+                  Open in new tab ↗
+                </a>
+              </div>
+              <iframe
+                src="https://docs.google.com/forms/d/e/1FAIpQLSd7BIfbpfGjbIIopI2PMsEOkwl2-gZFMd8uq5EulKKUmh23dg/viewform?embedded=true"
+                width="100%"
+                height="1336"
+                frameBorder="0"
+                marginHeight={0}
+                marginWidth={0}
+                style={{borderRadius:'12px', marginTop:'16px', background:'#fff'}}
+                title="StellarBloom Feedback Form"
+              >
+                Loading form…
+              </iframe>
             </div>
           </section>
         )}

@@ -13,8 +13,8 @@ type Stage =
 const STAGES: Record<string, { label: string; detail: string }> = {
   generating: { label: 'Generating invisible wallet...', detail: 'Creating a temporary Ed25519 keypair in your browser' },
   signing:    { label: 'Signing intent locally...',     detail: 'Private key never leaves your device' },
-  relaying:   { label: 'Submitting to Relayer...',      detail: 'StellarBloom sponsors your gas fee' },
-  confirming: { label: 'Writing to Soroban ledger...',  detail: 'Horizon is confirming the FeeBump transaction' },
+  relaying:   { label: 'Submitting sponsored intent...', detail: 'StellarBloom relayer is building the on-chain transaction' },
+  confirming: { label: 'Confirming on Stellar Testnet...', detail: 'Waiting for Horizon to return a verified transaction hash' },
 };
 
 export default function CoffeeShop({ onBack }: { onBack: () => void }) {
@@ -41,8 +41,9 @@ export default function CoffeeShop({ onBack }: { onBack: () => void }) {
       setTxHash(result.hash || null);
       setUserPubKey(result.userPubKey || null);
       setStage('success');
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Something went wrong. Is the Relayer running?');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Something went wrong. Is the Relayer reachable?';
+      setErrorMsg(message);
       setStage('error');
     }
   };
@@ -99,7 +100,7 @@ export default function CoffeeShop({ onBack }: { onBack: () => void }) {
                 Claim Free Coffee ☕
               </button>
               <p className="text-zinc-600 text-[10px] mt-4 leading-relaxed">
-                Clicking this generates a temporary cryptographic key in your browser, signs an intent, and executes a real Stellar transaction — all invisibly, in under 5 seconds.
+                Clicking this generates a temporary cryptographic key in your browser, signs an intent, and executes a real Stellar Testnet transaction — all invisibly, in seconds.
               </p>
             </div>
           )}
@@ -141,7 +142,7 @@ export default function CoffeeShop({ onBack }: { onBack: () => void }) {
                 <span className="text-emerald-400 text-2xl">✓</span>
               </div>
               <h2 className="text-2xl font-extrabold text-white mb-2">Coffee Claimed!</h2>
-              <p className="text-zinc-400 text-xs mb-6">A real Stellar transaction was executed on your behalf. You paid nothing.</p>
+              <p className="text-zinc-400 text-xs mb-6">A real Stellar Testnet transaction was executed on your behalf. You paid nothing.</p>
 
               {/* Receipt */}
               <div className="bg-black/50 rounded-xl p-4 border border-zinc-800 text-left text-xs space-y-3 mb-6">
@@ -191,7 +192,7 @@ export default function CoffeeShop({ onBack }: { onBack: () => void }) {
               <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 text-left mb-6">
                 <p className="text-red-400 text-xs font-mono break-words">{errorMsg}</p>
               </div>
-              <p className="text-zinc-600 text-xs mb-6">Make sure the Relayer is running on localhost:3000</p>
+              <p className="text-zinc-600 text-xs mb-6">Make sure the relayer is reachable and the sponsor account is funded on testnet.</p>
               <button onClick={handleReset} className="w-full bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-3 rounded-xl transition-all text-sm">
                 Try Again
               </button>
