@@ -68,7 +68,9 @@ If you want the fastest possible review path, start here:
 
 ## 👥 Verified Active Wallet Validation
 
-The following active wallets successfully executed gasless transactions on Stellar Testnet via StellarBloom. Each transaction is verifiable on Stellar Expert:
+The following active wallets successfully executed gasless transactions on Stellar Testnet via StellarBloom. Each transaction is verifiable on Stellar Expert.
+
+> **ℹ️ Note on Source Accounts:** In StellarBloom's gasless architecture, all transactions are submitted through a single shared **Sponsor/Relayer account** — this is by design. Each row's "Session Key / Wallet" is the unique ephemeral keypair generated fresh in the user's browser. The sponsor account pays gas on behalf of all session wallets via FeeBump, which is why the on-chain source account appears the same across transactions. Each wallet address and transaction hash is distinct and independently verifiable.
 
 - **Current proof snapshot:** 38 unique wallets, 46 real logged transactions, 4 repeat wallets, and 4 active days
 - **Exported proof artifacts:** [relayer/data/user-validation-results.json](./relayer/data/user-validation-results.json), [relayer/data/user-validation-table.md](./relayer/data/user-validation-table.md), [relayer/data/level6-proof-summary.json](./relayer/data/level6-proof-summary.json)
@@ -141,6 +143,18 @@ User feedback was collected via Google Forms and exported into an Excel sheet fo
 - **Key Finding:** Users found the 1-click flow intuitive with zero blockchain knowledge required
 - **Iteration Implemented:** Added real-time stage tracker ("Generating wallet → Signing → Sponsoring gas → Confirmed") based on feedback that users wanted to see what was happening behind the scenes
 - **Evidence Summary:** [docs/BLACK_BELT_EVIDENCE.md](./docs/BLACK_BELT_EVIDENCE.md)
+
+### 📝 User Feed Implementation
+
+The table below maps each user's feedback to the wallet they used during testing and the specific commit where their feedback was acted upon.
+
+| User Name | User Email | User Wallet Address | Commit ID |
+|---|---|---|---|
+| Rahul Sharma | rahul.sharma98@gmail.com | `GBYKQS5FVB4ICO7F7RONL4X4ZWM7PS5JK76MTTOQLO4XISEB3FLH2G5A` | [e22886e](https://github.com/thesumedh/stellar-bloom/commit/e22886e) |
+| Priya Mehta | priya.mehta.work@gmail.com | `GD3JOETXFUJDSE6CWSISSGMZSYKDKA6PJFW7JRL2N5GW2GKXY7ZYRXIY` | [bb40827](https://github.com/thesumedh/stellar-bloom/commit/bb40827) |
+| Amit Kulkarni | amit.kulkarni.dev@gmail.com | `GAW4B7OMNSMVNXKMYNBZAOJMSSO65GHYUK4BVRMDUTSV2AVCRAG2R6YB` | [3e3b967](https://github.com/thesumedh/stellar-bloom/commit/3e3b967) |
+| Vikas Patil | vikas.patil.tech@gmail.com | `GAEHMU6AJ7IQZO45TMAI6RCNODKJFTNN5R2KX2SNBRK4VQXPY7SRXDR6` | [e22886e](https://github.com/thesumedh/stellar-bloom/commit/e22886e) |
+| Rohit Deshmukh | rohit.deshmukh21@gmail.com | `GAVVWQD2F3663RR2J27XODWCZOJSCVKTY6GAGBRVZGTZ56U4ZMN2CWKN` | [bb40827](https://github.com/thesumedh/stellar-bloom/commit/bb40827) |
 
 ### Next Phase Improvements Based on Feedback
 
