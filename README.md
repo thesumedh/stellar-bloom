@@ -15,7 +15,7 @@
 
 ---
 
-## ⚫ Level 6 — Black Belt Submission
+## ⚫ Level 6 — Black Belt Submission - 
 
 ### ✅ Submission Checklist
 
