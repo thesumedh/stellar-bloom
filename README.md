@@ -13,6 +13,8 @@
 
 **StellarBloom** is a lightweight onboarding layer that enables users to interact with Soroban applications without requiring a wallet, crypto, or gas fees. Users simply click an action (e.g., "Claim Free Coffee"), and everything happens invisibly — a temporary wallet is created, the request is signed, and a Relayer submits a real sponsored transaction on their behalf. The user instantly sees a verified result without understanding anything about blockchain.
 
+
+
 ---
 
 ## ⚫ Level 6 — Black Belt Submission - 
